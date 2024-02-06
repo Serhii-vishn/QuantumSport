@@ -1,4 +1,4 @@
-namespace ReactNETApp2.API
+namespace QuantumSport.API
 {
     public class WeatherForecast
     {

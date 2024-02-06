@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace ReactNETApp2.API.Controllers
+namespace QuantumSport.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
