@@ -1,4 +1,4 @@
-namespace ReactNETApp2.UnitTests
+namespace QuantumSport.UnitTests
 {
     public class UnitTest1
     {
