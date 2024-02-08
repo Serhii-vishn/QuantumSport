@@ -15,5 +15,13 @@
         {
             // some validation is here
         }
+
+        public void ValidateMoreCoach()
+        {
+            // some deeper validation for coach is here
+            // validation
+            // and validation
+            // and more validation
+        }
     }
 }

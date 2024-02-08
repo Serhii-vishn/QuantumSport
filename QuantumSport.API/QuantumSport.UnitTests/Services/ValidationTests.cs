@@ -13,5 +13,16 @@ namespace QuantumSport.UnitTests.Services
         {
             //SUKA BLYAt Pi*dec
         }
+
+        [Fact]
+        public void ValidationMoreCoachesSuccess()
+        {
+            //OOh nice code, good tested
+        }
+        [Fact]
+        public void ValidationMoreCoachesFailed()
+        {
+            //GG lost game, Delete all u have , Big CHUNGUS
+        }
     }
 }
