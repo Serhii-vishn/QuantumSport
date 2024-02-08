@@ -10,5 +10,10 @@
         {
             // some validation is here
         }
+
+        public void ValidateCoach()
+        {
+            // some validation is here
+        }
     }
 }
