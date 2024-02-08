@@ -1,0 +1,108 @@
+@import "../../styles/variables.scss";
+
+.header {
+    background-color: #0f0d0d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 90px;
+    padding-right: 90px;
+    position: fixed;
+    width: 100%;
+
+    .headerLogo {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 5px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+
+        .logoImg {
+            width: 50px;
+            max-height: 50px;
+            position: stati75
+        }
+
+        .logoTitle {
+            font-size: 25px;
+            font-weight: bold;
+            color: white;
+        }
+    }
+
+    .headerNav {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 55px;
+
+        .headerNavList {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+
+            .headerNavListItem {
+                position: relative;
+
+                .headerNavListItemLink {
+                    color: white;
+                    text-transform: uppercase;
+                    font-size: 15px;
+
+                    &:hover {
+                        color: $orange-color;
+                    }
+                }
+
+                .headerNavListItemInfo {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                    padding: 15px 15px 15px 30px;
+                    position: absolute;
+                    top: 51px;
+                    right: -40px;
+                    width: 435px;
+                    background-color: #0f0d0d;
+
+                    li {
+                        .infoLink {
+                            color: white;
+                            text-transform: uppercase;
+                            font-size: 15px;
+
+                            &:hover {
+                                color: $orange-color;
+                            }
+                        }
+                    }
+
+                    &::after{
+                        content:"";
+                        width: 3px;
+                        height: 100%;
+                        background-color: $orange-color;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                    }
+                }
+            }
+        }
+
+        .headerNavBtn {
+            border: 2px solid $orange-color;
+            color: white;
+            background-color: $orange-color;
+            padding: 15px;
+
+            &:hover {
+                cursor: pointer;
+                background-color: transparent;
+                color: $orange-color;
+            }
+        }
+    }
+}
