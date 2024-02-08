@@ -11,7 +11,7 @@ namespace QuantumSport.UnitTests.Services
         [Fact]
         public void ValidationTestSuccess
         {
-            //trascya
+            //SUKA BLYAt Pi*dec
         }
     }
 }
