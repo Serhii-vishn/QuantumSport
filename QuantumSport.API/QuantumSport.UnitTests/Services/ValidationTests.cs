@@ -9,7 +9,7 @@ namespace QuantumSport.UnitTests.Services
     class ValidationTests
     {
         [Fact]
-        public void ValidationTestSuccess
+        public void ValidationTestSuccess()
         {
             //SUKA BLYAt Pi*dec
         }
