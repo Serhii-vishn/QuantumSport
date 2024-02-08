@@ -1,47 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from "./Header.module.scss";
 import { ReactComponent as Logo } from "../../img/Logo.svg";
 import { NavLink } from 'react-router-dom';
+import classNames from 'classnames';
 
 function Header() {
+    const [isServices, setIsServices] = useState(false);
+    const [isTeam, setIsTeam] = useState(false);
+    const [isSections, setIsSections] = useState(false);
+    const [isActiveMenu, setIsActiveMenu] = useState(false);
+
     return (
         <div className={styles.header}>
             <NavLink to="/" className={styles.headerLogo}>
                 <Logo className={styles.logoImg} />
                 <h2 className={styles.logoTitle}>ENERGYGYM</h2>
             </NavLink>
-            <nav className={styles.headerNav}>
+            <nav className= {classNames(styles.headerNav,isActiveMenu? styles.active:null)}>
                 <ul className={styles.headerNavList}>
                     <li className={styles.headerNavListItem}>
                         <NavLink to="/" className={styles.headerNavListItemLink}>
                             головна
                         </NavLink></li>
-                    <li className={styles.headerNavListItem}>
-                        <NavLink to="/services" className={styles.headerNavListItemLink}>
+                    <li className={styles.headerNavListItem} onMouseEnter={() => setIsServices(true)} onMouseLeave={() => setIsServices(false)}>
+                        <p className={styles.headerNavListItemLink}>
                             послуги
-                        </NavLink>
-                        <ul  className={styles.headerNavListItemInfo}>
-                            <li><NavLink className={styles.infoLink}>Записатись на тренування</NavLink></li>
-                            <li><NavLink className={styles.infoLink}>Замовити індивідуальну програму тренувань</NavLink></li>
-                            <li><NavLink className={styles.infoLink}>Замовити індивідуальний план харчування</NavLink></li>
-                        </ul>
+                        </p>
+                        {isServices ?
+                            <ul className={classNames(styles.headerNavListItemInfo, styles.headerNavListItemInfoServices)}>
+                                <li><NavLink className={styles.infoLink}>Записатись на тренування</NavLink></li>
+                                <li><NavLink className={styles.infoLink}>Замовити індивідуальну програму тренувань</NavLink></li>
+                                <li><NavLink className={styles.infoLink}>Замовити індивідуальний план харчування</NavLink></li>
+                            </ul>
+                            : ""}
                     </li>
-                    <li className={styles.headerNavListItem}>
-                        <NavLink to="/team" className={styles.headerNavListItemLink}>
+                    <li className={styles.headerNavListItem} onMouseEnter={() => setIsTeam(true)} onMouseLeave={() => setIsTeam(false)}>
+                        <p className={styles.headerNavListItemLink}>
                             команда
-                        </NavLink>
-                        {/* <ul className={styles.headerNavListItemInfo}>
-
-                        </ul> */}
-                        </li>
-                    <li className={styles.headerNavListItem}>
-                        <NavLink to="/sections" className={styles.headerNavListItemLink}>
+                        </p>
+                        {isTeam ?
+                            <ul className={classNames(styles.headerNavListItemInfo, styles.headerNavListItemInfoTeam)}>
+                                <li><NavLink className={styles.infoLink}>Тренери</NavLink></li>
+                                <li><NavLink className={styles.infoLink}>Дієтологи</NavLink></li>
+                            </ul>
+                            : ""}
+                    </li>
+                    <li className={styles.headerNavListItem} onMouseEnter={() => setIsSections(true)} onMouseLeave={() => setIsSections(false)}>
+                        <p className={styles.headerNavListItemLink}>
                             спортивні секції
-                        </NavLink>
-                        {/* <div className={styles.headerNavListItemInfo}>
-
-                        </div> */}
-                        </li>
+                        </p>
+                        {isSections ?
+                            <ul className={classNames(styles.headerNavListItemInfo, styles.headerNavListItemInfoSections)}>
+                                <li><NavLink className={styles.infoLink}>Бокс</NavLink></li>
+                                <li><NavLink className={styles.infoLink}>Crossfit</NavLink></li>
+                                <li><NavLink className={styles.infoLink}>Фітнес</NavLink></li>
+                            </ul>
+                            : ""}
+                    </li>
                     <li className={styles.headerNavListItem}>
                         <NavLink to="/blog" className={styles.headerNavListItemLink}>
                             блог
@@ -51,8 +66,11 @@ function Header() {
                             про energygym
                         </NavLink></li>
                 </ul>
-                <button className={styles.headerNavBtn}>МОЇ ТРЕНУВАННЯ</button>
+                <button type='button' className={styles.headerNavBtn}>МОЇ ТРЕНУВАННЯ</button>
             </nav>
+            <div className={classNames(styles.menu, isActiveMenu ? styles.active : null)} onClick={() => { setIsActiveMenu((val) => !val) }}>
+                <span className={styles.burger}></span>
+            </div>
         </div>
     );
 }
