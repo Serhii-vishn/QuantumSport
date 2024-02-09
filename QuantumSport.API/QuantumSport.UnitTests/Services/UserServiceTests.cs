@@ -61,16 +61,15 @@
             result.First().Should().Be(_fakeUserDTO);
         }
 
-        [Theory]
-        [InlineData(0)]
-        public async Task GetAsync_WithoutConnectionToDb_ThrowsSqlException(int id)
+        [Fact]
+        public async Task GetAsync_WithoutConnectionToDb_ThrowsSqlException()
         {
             // Arrange
             var sqlEx = MakeSqlException();
-            _userRepository.Setup(s => s.GetAsync(id)).ThrowsAsync(sqlEx);
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ThrowsAsync(sqlEx);
 
             // Act and Assert
-            await Assert.ThrowsAsync<SqlException>(async () => await _userService.GetAsync(id));
+            await Assert.ThrowsAsync<SqlException>(async () => await _userService.GetAsync(_fakeUserDTO.Id));
         }
 
         [Theory]
