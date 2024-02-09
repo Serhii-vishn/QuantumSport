@@ -1,0 +1,11 @@
+global using Xunit;
+global using AutoMapper;
+global using Microsoft.Data.SqlClient;
+global using Moq;
+global using FluentAssertions;
+global using QuantumSport.API.Repositories.Interfaces;
+global using QuantumSport.API.Services;
+global using QuantumSport.API.Services.Interfaces;
+global using QuantumSport.API.Data.Entities;
+global using QuantumSport.API.Models.DTOs;
+global using QuantumSport.API.Exceptions;
