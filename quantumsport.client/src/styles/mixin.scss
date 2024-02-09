@@ -1,5 +1,11 @@
     @import "variables.scss";
 
+    @mixin width_440 {
+        @media (max-width: 440px){
+            @content;
+        }
+    }
+
     @mixin width_576 {
         @media (max-width: 576px){
             @content;
@@ -14,6 +20,12 @@
 
     @mixin width_880 {
         @media (max-width: 880px){
+            @content;
+        }
+    }
+
+    @mixin width_900 {
+        @media (max-width: 900px){
             @content;
         }
     }
