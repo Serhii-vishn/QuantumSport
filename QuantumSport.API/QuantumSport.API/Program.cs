@@ -6,10 +6,18 @@ builder.Services.AddControllers();
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration["ConnectionString"]));
+builder.Services.AddTransient<IUserService, UserService>();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(configuration["ConnectionString"]);
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

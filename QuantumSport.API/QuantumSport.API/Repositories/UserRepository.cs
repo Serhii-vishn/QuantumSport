@@ -11,14 +11,13 @@
 
         public async Task<UserEntity> GetAsync(int id)
         {
-            var user = await _context.Users.Where(u => u.Id == id).FirstAsync();
-            return user;
+            var user = await _context.Users.Where(u => u.Id == id).SingleOrDefaultAsync();
+            return user!;
         }
 
         public async Task<IList<UserEntity>> ListAsync()
         {
-            var users = await _context.Users.ToListAsync();
-            return users;
+            return await _context.Users.ToListAsync();
         }
 
         public async Task<int> AddAsync(UserEntity user)
