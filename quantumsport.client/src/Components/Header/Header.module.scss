@@ -1,0 +1,345 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixin.scss";
+
+@keyframes example {
+    0% {
+        background-color: transparent;
+        color: transparent;
+    }
+}
+
+.header {
+    background-color: #0f0d0d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 90px;
+    padding-right: 90px;
+    position: fixed;
+    width: 100%;
+
+    .headerLogo {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 5px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+
+        .logoImg {
+            width: 50px;
+            max-height: 50px;
+            position: stati75
+        }
+
+        .logoTitle {
+            font-size: 25px;
+            font-weight: bold;
+            color: white;
+
+            @include width_1271 {
+                font-size: 20px;
+            }
+
+            @include width_880 {
+                font-size: 23px;
+            }
+        }
+    }
+
+    .headerNav {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 55px;
+        animation: example .5s ease-in-out;
+
+        .headerNavList {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+
+            .headerNavListItem {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .headerNavListItemLink {
+                    color: white;
+                    text-transform: uppercase;
+                    font-size: 15px;
+
+                    &:hover {
+                        color: $orange-color;
+                    }
+
+                    @include width_1271 {
+                        font-size: 13px;
+                    }
+
+                    @include width_992 {
+                        font-size: 11px;
+                    }
+
+                    @include width_880 {
+                        font-size: 20px;
+                    }
+
+                    @include width_576 {
+                        font-size: 13px;
+                    }
+
+                }
+
+                .headerNavListItemInfo {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                    padding: 15px 15px 15px 30px;
+                    position: absolute;
+                    top: 15px;
+                    background-color: #0f0d0d;
+                    animation: example .5s ease-in-out;
+
+
+                    li {
+                        .infoLink {
+                            color: white;
+                            text-transform: uppercase;
+                            font-size: 15px;
+
+                            &:hover {
+                                color: $orange-color;
+                            }
+
+                            @include width_1271 {
+                                font-size: 13px;
+                            }
+
+                            @include width_992 {
+                                font-size: 12px;
+                            }
+
+                            @include width_880 {
+                                font-size: 20px;
+                            }
+
+                            @include width_576 {
+                                font-size: 13px;
+                            }
+                        }
+                    }
+
+                    &::after {
+                        content: "";
+                        width: 3px;
+                        height: 100%;
+                        background-color: $orange-color;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                    }
+
+                    @include width_880 {
+                        top: 0;
+                    }
+
+                    @include width_768 {
+                        gap: 10px;
+                    }
+                }
+
+                .headerNavListItemInfoServices {
+                    width: 435px;
+                    right: -180px;
+
+                    @include width_1271 {
+                        font-size: 13px;
+                        width: 355px;
+                    }
+
+                    @include width_880 {
+                        width: 305px;
+                        right: 95px;
+                    }
+
+                    @include width_576 {
+                        width: 160px;
+                        right: 63px;
+                        top: 3px;
+                        z-index: 1;
+                    }
+                }
+
+                .headerNavListItemInfoTeam {
+                    right: -20px;
+
+                    @include width_880 {
+                        right: 100px;
+                    }
+
+                    @include width_576 {
+                        right: 70px;
+                    }
+                }
+
+                .headerNavListItemInfoSections {
+                    width: 100%;
+
+                    @include width_880 {
+                        right: 190px;
+                    }
+
+                    @include width_576 {
+                        right: 135px;
+                    }
+                }
+            }
+
+            @include width_1271 {
+                gap: 8px;
+            }
+
+            @include width_880 {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+        }
+
+        .headerNavBtn {
+            border: 2px solid $orange-color;
+            color: white;
+            background-color: $orange-color;
+            padding: 15px;
+            font-size: 15px;
+
+            &:hover {
+                cursor: pointer;
+                background-color: transparent;
+                color: $orange-color;
+                transition: .5s;
+            }
+
+            @include width_1271 {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            @include width_992 {
+                padding: 8px;
+                font-style: 13px;
+            }
+
+            @include width_880 {
+                border: none;
+                background-color: transparent;
+                font-size: 20px;
+                padding: 0;
+            }
+
+            @include width_576 {
+                font-size: 13px;
+            }
+
+        }
+
+
+        @include width_1271 {
+            gap: 10px;
+        }
+
+        @include width_992 {
+            gap: 18px;
+        }
+
+        @include width_880 {
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            position: absolute;
+            right: 0;
+            top: 80px;
+            background-color: #0f0d0d;
+            padding: 25px 40px;
+            gap: 20px;
+            display: none;
+
+            &.active {
+                display: flex;
+            }
+        }
+
+
+    }
+
+    .menu {
+        display: none;
+        position: relative;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        background-color: $orange-color;
+        justify-content: center;
+        align-items: center;
+
+        &.active {
+            .burger {
+                transform: translateX(-21px);
+                background-color: transparent;
+
+                &::before {
+                    transform: rotate(45deg) translate(15px, -15px);
+                }
+
+                &::after {
+                    transform: rotate(-45deg) translate(15px, 15px);
+                }
+            }
+        }
+
+        .burger {
+            width: 30px;
+            height: 4px;
+            background-color: white;
+            transition: all .5s ease;
+
+            &::before {
+                position: absolute;
+                content: "";
+                width: 30px;
+                height: 4px;
+                background-color: white;
+                transition: all .5s ease;
+                transform: translateY(-10px);
+            }
+
+            &::after {
+                position: absolute;
+                content: "";
+                width: 30px;
+                height: 4px;
+                background-color: white;
+                transition: all .5s ease;
+                transform: translateY(10px);
+            }
+        }
+
+        @include width_880 {
+            display: flex;
+        }
+    }
+
+
+    @include width_1271 {
+        padding-left: 70px;
+        padding-right: 70px;
+    }
+
+    @include width_992 {
+        padding-left: 50px;
+        padding-right: 50px;
+    }
+}
