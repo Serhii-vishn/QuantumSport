@@ -1,1 +1,138 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixin.scss";
 
+.photoSection{
+    position: relative;
+    height: 100%;
+
+    .photoSectionImg{
+        height: 100%;
+        width: 100%;
+        color: white;
+        z-index: 0;
+        position: relative;
+        padding-top: 80px;
+
+        @include width_576 {
+            padding-top: 70px;
+        }
+    }
+
+    .photoSectionInfo{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        position: absolute;
+        top: 210px;
+        padding-left: 90px;
+
+        .photoSectionInfoTitle{
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            width: 430px;
+            margin-bottom: 25px;
+
+            @include width_1271 {
+                font-size: 30px;
+                width: 330px;
+                margin-bottom: 15px;
+            }
+
+            @include width_992 {
+                width: 285px;
+                font-size: 25px;
+            }
+
+            @include width_768 {
+                font-size: 20px;
+                width: 240px;
+            }
+
+            @include width_576 {
+                width: 200px;
+
+            }
+            
+        }
+
+        .photoSectionInfoText{
+            font-size: 25px;
+            color: white;
+            width: 295px;
+            margin-bottom: 50px;
+
+            @include width_1271 {
+                font-size: 20px;
+                width: 225px;
+                margin-bottom: 20px;
+            }
+
+            @include width_992 {
+                width: 210px;
+                font-size: 17px;
+            }
+
+            @include width_880 {
+                font-size: 15px;
+            }
+
+            @include width_672 {
+                font-size: 13px;
+            }
+
+            @include width_576 {
+                display: none;
+            }
+        }
+
+        .photoSectionInfolink{
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            padding: 15px 20px;
+            background-color: $orange-color;
+            border: 2px solid $orange-color;
+
+            &:hover{
+                background-color: transparent;
+                color: $orange-color;
+                transition: .5s;
+            }
+
+            @include width_1271 {
+                font-size: 15px;
+                padding: 10px 15px;
+            }
+
+            @include width_768 {
+                font-size: 14px;
+
+            }
+        }
+
+        @include width_992 {
+            padding-left: 50px;
+            top: 170px;
+        }
+
+        @include width_880 {
+            top: 150px;
+        }
+
+        @include width_672 {
+            top: 128px;
+        }
+
+        @include width_576 {
+            top: 120px;
+        }
+
+        @include width_440 {
+            top: 100px;
+            padding-left: 30px;
+        }
+    }
+}

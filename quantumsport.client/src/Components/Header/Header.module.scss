@@ -6,6 +6,10 @@
         background-color: transparent;
         color: transparent;
     }
+    100% {
+        background-color: #0f0d0d;
+        color: white;
+    }
 }
 
 .header {
@@ -17,6 +21,7 @@
     padding-right: 90px;
     position: fixed;
     width: 100%;
+    z-index: 1;
 
     .headerLogo {
         display: flex;
@@ -45,6 +50,11 @@
                 font-size: 23px;
             }
         }
+
+        @include width_576 {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
     }
 
     .headerNav {
@@ -52,7 +62,7 @@
         align-items: center;
         justify-content: flex-end;
         gap: 55px;
-        animation: example .5s ease-in-out;
+        animation: example 1s ease;
 
         .headerNavList {
             display: flex;
@@ -73,6 +83,8 @@
 
                     &:hover {
                         color: $orange-color;
+                        transition: .5s;
+                        cursor: pointer;
                     }
 
                     @include width_1271 {
@@ -272,7 +284,12 @@
             }
         }
 
+        @include width_576 {
 
+            &.active {
+                top: 70px;
+            }
+        }
     }
 
     .menu {
@@ -341,5 +358,10 @@
     @include width_992 {
         padding-left: 50px;
         padding-right: 50px;
+    }
+
+    @include width_440 {
+        padding-left: 30px;
+        padding-right: 30px;
     }
 }
