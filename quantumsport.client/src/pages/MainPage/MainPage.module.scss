@@ -42,6 +42,7 @@
 
             @include width_992 {
                 width: 285px;
+                font-size: 25px;
             }
 
             @include width_768 {
@@ -50,7 +51,8 @@
             }
 
             @include width_576 {
-                width: 215px;
+                width: 200px;
+
             }
             
         }
@@ -66,7 +68,21 @@
                 width: 225px;
                 margin-bottom: 20px;
             }
+
             @include width_992 {
+                width: 210px;
+                font-size: 17px;
+            }
+
+            @include width_880 {
+                font-size: 15px;
+            }
+
+            @include width_672 {
+                font-size: 13px;
+            }
+
+            @include width_576 {
                 display: none;
             }
         }
@@ -90,18 +106,28 @@
                 font-size: 15px;
                 padding: 10px 15px;
             }
-            @include width_992 {
-                display: none;
+
+            @include width_768 {
+                font-size: 14px;
+
             }
         }
 
         @include width_992 {
             padding-left: 50px;
-            top: 185px;
+            top: 170px;
+        }
+
+        @include width_880 {
+            top: 150px;
+        }
+
+        @include width_672 {
+            top: 128px;
         }
 
         @include width_576 {
-            top: 130px;
+            top: 120px;
         }
 
         @include width_440 {
