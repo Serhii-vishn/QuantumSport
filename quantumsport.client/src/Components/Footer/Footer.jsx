@@ -11,7 +11,7 @@ function Footer() {
             <div className={styles.footerContacts}>
                 <h3 className={styles.footerContactsTitle}>Контакти</h3>
                 <p className={styles.footerContactsName}>Спортивний комплекс “EnergyGym”</p>
-                <address className={styles.footerContactsAddress}>м. Київ. Дніпровська набережна, 14</address>
+                <p className={styles.footerContactsAddress}>м. Київ. Дніпровська набережна, 14</p>
                 <a className={styles.footerContactsPhone} href="tel:+380 (63) 080-80-80">+380 (63) 080-80-80</a>
                 <a className={styles.footerContactsPhone} href="tel:+380 (67) 080-80-80">+380 (67) 080-80-80</a>
                 <a className={styles.footerContactsPhone} href="tel:+380 (50) 080-80-80">+380 (50) 080-80-80</a>
