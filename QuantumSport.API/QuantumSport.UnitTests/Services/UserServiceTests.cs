@@ -1,4 +1,6 @@
-﻿namespace QuantumSport.UnitTests.Services
+﻿using Moq;
+
+namespace QuantumSport.UnitTests.Services
 {
     public class UserServiceTests
     {
@@ -86,7 +88,7 @@
         }
 
         [Fact]
-        public async Task GetAsync_ReturnsUserDTO()
+        public async Task GetAsync_PassingValidId_ReturnsUserDTO()
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
@@ -101,6 +103,50 @@
             result.Should().NotBeNull();
             result.Should().BeOfType<UserDTO>();
             result.Should().Be(_fakeUserDTO);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+
+        public async Task DeleteAsync_PassingInvalidId_ThrowsUserNotFoundException(int id)
+        {
+            // Arrange
+            UserEntity nullUserEntity = null!;
+            _userRepository.Setup(s => s.GetAsync(id)).ReturnsAsync(nullUserEntity);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<UserNotFoundException>(async () => await _userService.DeleteAsync(id));
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WithoutConnectionToDb_ThrowsSqlException()
+        {
+            // Arrange
+            var sqlEx = MakeSqlException();
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _userRepository.Setup(s => s.DeleteAsync(_fakeUserEntity.Id)).ThrowsAsync(sqlEx);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<SqlException>(async () => await _userService.DeleteAsync(_fakeUserDTO.Id));
+        }
+
+        [Fact]
+        public async Task DeleteAsync_PassingValidId_ReturnsDeletedId()
+        {
+            // Arrange
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _userRepository.Setup(s => s.DeleteAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity.Id);
+
+            // Act
+            var result = await _userService.DeleteAsync(_fakeUserDTO.Id);
+
+            // Assert
+            result.Should().Be(_fakeUserDTO.Id);
         }
 
         private SqlException MakeSqlException()
