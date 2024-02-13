@@ -31,7 +31,7 @@ function MainPage() {
                                 <BoxingGloves className={styles.sectionItemInfoSvg} />
                                 <p className={styles.sectionItemInfoText}>Контактний вид спорту, єдиноборство, в якому спортсмени наносять один одному удари кулаками в спеціальних рукавичках.Перемога боксера у випадку, якщо суперник збитий з ніг і не може піднятися протягом десяти секунд (нокаут) або після отриманої травми.</p>
                             </div>
-                            <NavLink to="/section/boxing" className={styles.sectionItemInfoLink}>Записатися</NavLink>
+                            <NavLink to="/schedule" className={styles.sectionItemInfoLink}>Записатися</NavLink>
                         </div>
                         <img className={styles.sectionItemImg} src={boxing} alt="Бокс фото" />
                     </li>
@@ -43,7 +43,7 @@ function MainPage() {
                                 <DumbbellWeight className={styles.sectionItemInfoSvg} />
                                 <p className={styles.sectionItemInfoText}>Кросфіт — молодий спортивний напрямок, що стрімко розвивається та набирає популярність у Києві та всіх великих містах України.CrossFit — це новий погляд на спорт, здоровий спосіб життя і самого себе, свої можливості та прагнення.</p>
                             </div>
-                            <NavLink to="/section/crossfit" className={styles.sectionItemInfoLink}>Записатися</NavLink>
+                            <NavLink to="/schedule" className={styles.sectionItemInfoLink}>Записатися</NavLink>
                         </div>
                     </li>
                     <li className={styles.sectionListItem}>
@@ -53,7 +53,7 @@ function MainPage() {
                                 <Dumbbell className={styles.sectionItemInfoSvg} />
                                 <p className={styles.sectionItemInfoText}>Рух — це життя. Фітнес — це рух для сучасних людей, які хочуть жити насичено та активно. Cпорт може змінити на краще життя кожної людини, головне — знайти напрямок, який буде вам до душі та людей, які підтримають ваше прагнення до здоров’я та краси.</p>
                             </div>
-                            <NavLink to="/section/fitness" className={styles.sectionItemInfoLink}>Записатися</NavLink>
+                            <NavLink to="/schedule" className={styles.sectionItemInfoLink}>Записатися</NavLink>
                         </div>
                         <img className={styles.sectionItemImg} src={fitness} alt="Фітнес фото" />
                     </li>

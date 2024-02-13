@@ -28,9 +28,9 @@ function Header() {
                         </p>
                         {isServices ?
                             <ul className={classNames(styles.headerNavListItemInfo, styles.headerNavListItemInfoServices)}>
-                                <li><NavLink to="/staff/coaches" className={styles.infoLink}>Записатись на тренування</NavLink></li>
-                                <li><NavLink to="/staff/coaches" className={styles.infoLink}>Замовити індивідуальну програму тренувань</NavLink></li>
-                                <li><NavLink to="/staff/nutritionists" className={styles.infoLink}>Замовити індивідуальний план харчування</NavLink></li>
+                                <li><NavLink to="/schedule" className={styles.infoLink}>Записатись на тренування</NavLink></li>
+                                <li><button type='button'  className={styles.infoLink}>Замовити індивідуальну програму тренувань</button></li>
+                                <li><button type='button'  className={styles.infoLink}>Замовити індивідуальний план харчування</button></li>
                             </ul>
                             : ""}
                     </li>

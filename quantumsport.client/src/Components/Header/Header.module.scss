@@ -124,6 +124,7 @@
 
                             &:hover {
                                 color: $orange-color;
+                                cursor: pointer;
                             }
 
                             @include width_1271 {
