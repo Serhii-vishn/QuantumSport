@@ -16,12 +16,10 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-
-    - name: Change directory to API
-      run: cd QuantumSport.API
         
     - name: Restore dependencies
       run: dotnet restore
+      working-directory: QuantumSport.API
       
     - name: Build
       run: dotnet build
