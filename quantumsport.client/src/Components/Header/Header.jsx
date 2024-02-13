@@ -28,9 +28,9 @@ function Header() {
                         </p>
                         {isServices ?
                             <ul className={classNames(styles.headerNavListItemInfo, styles.headerNavListItemInfoServices)}>
-                                <li><NavLink to="/personnel/coachesList" className={styles.infoLink}>Записатись на тренування</NavLink></li>
-                                <li><NavLink to="/personnel/coachesList" className={styles.infoLink}>Замовити індивідуальну програму тренувань</NavLink></li>
-                                <li><NavLink to="/personnel/nutritionistsList" className={styles.infoLink}>Замовити індивідуальний план харчування</NavLink></li>
+                                <li><NavLink to="/staff/coaches" className={styles.infoLink}>Записатись на тренування</NavLink></li>
+                                <li><NavLink to="/staff/coaches" className={styles.infoLink}>Замовити індивідуальну програму тренувань</NavLink></li>
+                                <li><NavLink to="/staff/nutritionists" className={styles.infoLink}>Замовити індивідуальний план харчування</NavLink></li>
                             </ul>
                             : ""}
                     </li>
@@ -40,8 +40,8 @@ function Header() {
                         </p>
                         {isTeam ?
                             <ul className={classNames(styles.headerNavListItemInfo, styles.headerNavListItemInfoTeam)}>
-                                <li><NavLink to="/personnel/coachesList" className={styles.infoLink}>Тренери</NavLink></li>
-                                <li><NavLink to="/personnel/nutritionistsList" className={styles.infoLink}>Дієтологи</NavLink></li>
+                                <li><NavLink to="/staff/coaches" className={styles.infoLink}>Тренери</NavLink></li>
+                                <li><NavLink to="/staff/nutritionists" className={styles.infoLink}>Дієтологи</NavLink></li>
                             </ul>
                             : ""}
                     </li>
