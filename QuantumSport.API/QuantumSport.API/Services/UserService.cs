@@ -25,6 +25,18 @@ namespace QuantumSport.API.Services
             return _mapper.Map<UserDTO>(data);
         }
 
+        public async Task<UserDTO> GetAsync(string phoneNumber)
+        {
+            var data = await _userRepository.GetAsync(phoneNumber);
+
+            if (data == null)
+            {
+                throw new UserNotFoundException($"User with phone = {phoneNumber} does not exist");
+            }
+
+            return _mapper.Map<UserDTO>(data);
+        }
+
         public async Task<IList<UserDTO>> ListAsync()
         {
             var data = await _userRepository.ListAsync();
