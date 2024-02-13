@@ -51,6 +51,28 @@
             }
         }
 
+        [HttpGet]
+        [Route("/user/byPhone{phone}")]
+        public async Task<ActionResult> GetUser(string phone)
+        {
+            try
+            {
+                var result = await _userService.GetAsync(phone);
+                _logger.LogInformation($"User with phone = {result.Phone} was received");
+                return Ok(result);
+            }
+            catch (UserNotFoundException ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return StatusCode(500);
+            }
+        }
+
         [HttpPost]
         [Route("/user")]
         public async Task<ActionResult> AddUser(UserDTO user)
