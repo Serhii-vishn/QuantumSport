@@ -19,7 +19,7 @@ function MainPage() {
                     <h1 className={styles.photoSectionInfoTitle}>Тренуй своє тіло та розум</h1>
                     <p className={styles.photoSectionInfoText}>Приєднуйтесь до нас і відкривайте
                         новий рівень фізичної підготовки.</p>
-                    <NavLink to="/services" className={styles.photoSectionInfolink}>розпочни сьогодні!</NavLink>
+                    <NavLink to="/schedule" className={styles.photoSectionInfolink}>розпочни сьогодні!</NavLink>
                 </div>
             </div>
             <section className={styles.sectionsWrapper}>
