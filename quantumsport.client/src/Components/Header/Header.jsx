@@ -28,9 +28,9 @@ function Header() {
                         </p>
                         {isServices ?
                             <ul className={classNames(styles.headerNavListItemInfo, styles.headerNavListItemInfoServices)}>
-                                <li><NavLink className={styles.infoLink}>Записатись на тренування</NavLink></li>
-                                <li><NavLink className={styles.infoLink}>Замовити індивідуальну програму тренувань</NavLink></li>
-                                <li><NavLink className={styles.infoLink}>Замовити індивідуальний план харчування</NavLink></li>
+                                <li><NavLink to="/personnel/coachesList" className={styles.infoLink}>Записатись на тренування</NavLink></li>
+                                <li><NavLink to="/personnel/coachesList" className={styles.infoLink}>Замовити індивідуальну програму тренувань</NavLink></li>
+                                <li><NavLink to="/personnel/nutritionistsList" className={styles.infoLink}>Замовити індивідуальний план харчування</NavLink></li>
                             </ul>
                             : ""}
                     </li>
@@ -40,8 +40,8 @@ function Header() {
                         </p>
                         {isTeam ?
                             <ul className={classNames(styles.headerNavListItemInfo, styles.headerNavListItemInfoTeam)}>
-                                <li><NavLink className={styles.infoLink}>Тренери</NavLink></li>
-                                <li><NavLink className={styles.infoLink}>Дієтологи</NavLink></li>
+                                <li><NavLink to="/personnel/coachesList" className={styles.infoLink}>Тренери</NavLink></li>
+                                <li><NavLink to="/personnel/nutritionistsList" className={styles.infoLink}>Дієтологи</NavLink></li>
                             </ul>
                             : ""}
                     </li>
@@ -51,9 +51,9 @@ function Header() {
                         </p>
                         {isSections ?
                             <ul className={classNames(styles.headerNavListItemInfo, styles.headerNavListItemInfoSections)}>
-                                <li><NavLink className={styles.infoLink}>Бокс</NavLink></li>
-                                <li><NavLink className={styles.infoLink}>Crossfit</NavLink></li>
-                                <li><NavLink className={styles.infoLink}>Фітнес</NavLink></li>
+                                <li><NavLink to="/section/boxing" className={styles.infoLink}>Бокс</NavLink></li>
+                                <li><NavLink to="/section/crossfit" className={styles.infoLink}>Crossfit</NavLink></li>
+                                <li><NavLink to="/section/fitness" className={styles.infoLink}>Фітнес</NavLink></li>
                             </ul>
                             : ""}
                     </li>

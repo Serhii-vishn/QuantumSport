@@ -6,7 +6,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding:30px 200px 50px;
+    padding: 30px 200px 50px;
     position: relative;
 
     .footerContacts {
@@ -75,12 +75,13 @@
         padding-top: 15px;
         padding-bottom: 15px;
         position: absolute;
-        width: calc(100% - 400px);
+        margin: 0 auto;
+        left: calc(50% - 109px);
+        top: 15px;
 
         .logoImg {
             width: 50px;
             max-height: 50px;
-            position: stati75
         }
 
         .logoTitle {
@@ -98,11 +99,7 @@
         }
 
         @include width_1271 {
-            width: calc(100% - 130px);
-        }
-
-        @include width_992 {
-            width: calc(100% - 90px);
+            left: calc(50% - 92px);
         }
 
         @include width_880 {
@@ -134,12 +131,12 @@
             }
         }
 
-        .footerScheduleText{
+        .footerScheduleText {
             font-size: 18px;
             font-weight: bold;
             text-transform: uppercase;
             color: #72665e;
-            
+
             @include width_992 {
                 font-size: 15px;
             }
@@ -155,15 +152,15 @@
     }
 
     @include width_1271 {
-        padding:30px 65px 50px;
+        padding: 30px 65px 50px;
     }
 
     @include width_992 {
-        padding:30px 45px 50px;
+        padding: 30px 45px 50px;
     }
 
     @include width_880 {
-        padding:30px 35px 50px;
+        padding: 30px 35px 50px;
         flex-direction: column;
         align-items: center;
     }

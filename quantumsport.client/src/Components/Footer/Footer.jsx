@@ -11,10 +11,10 @@ function Footer() {
             <div className={styles.footerContacts}>
                 <h3 className={styles.footerContactsTitle}>Контакти</h3>
                 <p className={styles.footerContactsName}>Спортивний комплекс “EnergyGym”</p>
-                <p className={styles.footerContactsAddress}>м. Київ. Дніпровська набережна, 14</p>
-                <a className={styles.footerContactsPhone} href="tel:+380 (63) 080-80-80">+380 (63) 080-80-80</a>
-                <a className={styles.footerContactsPhone} href="tel:+380 (67) 080-80-80">+380 (67) 080-80-80</a>
-                <a className={styles.footerContactsPhone} href="tel:+380 (50) 080-80-80">+380 (50) 080-80-80</a>
+                <p className={styles.footerContactsAddress}>м. Київ,  Дніпровська набережна, 14</p>
+                <a className={styles.footerContactsPhone} href="tel:+380630808080">+380 (63) 080-80-80</a>
+                <a className={styles.footerContactsPhone} href="tel:+380670808080">+380 (67) 080-80-80</a>
+                <a className={styles.footerContactsPhone} href="tel:+380500808080">+380 (50) 080-80-80</a>
             </div>
             <NavLink to="/" className={styles.logo}>
                 <Logo className={styles.logoImg} />
