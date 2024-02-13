@@ -58,7 +58,7 @@
             try
             {
                 var result = await _userService.GetAsync(phone);
-                _logger.LogInformation($"User with phone = {result.Phone} was received");
+                _logger.LogInformation($"User with id = {result.Id} was received");
                 return Ok(result);
             }
             catch (UserNotFoundException ex)
