@@ -23,6 +23,8 @@ jobs:
       
     - name: Build
       run: dotnet build
+      working-directory: QuantumSport.API
       
     - name: Test
       run: dotnet test
+      working-directory: QuantumSport.API/QuantumSport.UnitTests
