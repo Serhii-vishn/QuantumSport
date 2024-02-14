@@ -262,6 +262,95 @@ namespace QuantumSport.UnitTests.Services
             await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
         }
 
+        [Fact]
+        public async Task AddAsync_WithoutConnectionToDb_ThrowsSqlException()
+        {
+            // Arrange
+            var sqlEx = MakeSqlException();
+            _mapper.Setup(s => s.Map<UserEntity>(
+              It.Is<UserDTO>(i => i.Equals(_fakeUserDTO)))).Returns(_fakeUserEntity);
+            _userRepository.Setup(s => s.AddAsync(_fakeUserEntity)).ThrowsAsync(sqlEx);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<SqlException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task AddAsync_EmptyUserName_ThrowsArgumentException()
+        {
+            // Arrange
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Name = " ";
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task AddAsync_UserNameWithWrongPattern_ThrowsArgumentException()
+        {
+            // Arrange
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Name = " ZVZ@#$";
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task AddAsync_UserNameIsLessThreeSymbols_ThrowsArgumentException()
+        {
+            // Arrange
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Name = "Aa";
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task AddAsync_UserNameIsTooLong_ThrowsArgumentException()
+        {
+            // Arrange
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Name = "Aaa";
+            for (int i = 0; i < 255; i++)
+            {
+                _fakeUserDTO.Name += "a";
+            }
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task AddAsync_UserPhoneIsEmpty_ThrowsArgumentNullException()
+        {
+            // Arrange
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Phone = null!;
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task AddAsync_UserPhoneIsInvalid_ThrowsArgumentException()
+        {
+            // Arrange
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Phone = "43 23 abc";
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
         private SqlException MakeSqlException()
         {
             SqlException exception = null!;
