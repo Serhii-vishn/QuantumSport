@@ -149,6 +149,119 @@ namespace QuantumSport.UnitTests.Services
             result.Should().Be(_fakeUserDTO.Id);
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public async Task UpdateAsync_PassingInvalidId_ThrowsUserNotFoundException(int id)
+        {
+            // Arrange
+            UserEntity nullUserEntity = null!;
+            _mapper.Setup(s => s.Map<UserDTO>(
+               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _userRepository.Setup(s => s.GetAsync(id)).ReturnsAsync(nullUserEntity);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<UserNotFoundException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WithoutConnectionToDb_ThrowsSqlException()
+        {
+            // Arrange
+            var sqlEx = MakeSqlException();
+            _mapper.Setup(s => s.Map<UserDTO>(
+               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _mapper.Setup(s => s.Map<UserEntity>(
+               It.Is<UserDTO>(i => i.Equals(_fakeUserDTO)))).Returns(_fakeUserEntity);
+            _userRepository.Setup(s => s.GetAsync(_fakeUserDTO.Id)).ReturnsAsync(_fakeUserEntity);
+            _userRepository.Setup(s => s.UpdateAsync(_fakeUserEntity)).ThrowsAsync(sqlEx);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<SqlException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_EmptyUserName_ThrowsArgumentException()
+        {
+            // Arrange
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Name = " ";
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_UserNameWithWrongPattern_ThrowsArgumentException()
+        {
+            // Arrange
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Name = " ZVZ@#$";
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_UserNameIsLessThreeSymbols_ThrowsArgumentException()
+        {
+            // Arrange
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Name = "Aa";
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_UserNameIsTooLong_ThrowsArgumentException()
+        {
+            // Arrange
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Name = "Aaa";
+            for (int i = 0; i < 255; i++)
+            {
+                _fakeUserDTO.Name += "a";
+            }
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_UserPhoneIsEmpty_ThrowsArgumentNullException()
+        {
+            // Arrange
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Phone = null!;
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_UserPhoneIsInvalid_ThrowsArgumentException()
+        {
+            // Arrange
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Phone = "43 23 a";
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
         private SqlException MakeSqlException()
         {
             SqlException exception = null!;
