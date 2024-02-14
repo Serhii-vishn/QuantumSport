@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using AutoMapper.Execution;
 
 namespace QuantumSport.API.Services
 {
@@ -27,6 +28,8 @@ namespace QuantumSport.API.Services
 
         public async Task<UserDTO> GetAsync(string phoneNumber)
         {
+            ValidateUserPhone(phoneNumber);
+
             var data = await _userRepository.GetAsync(phoneNumber);
 
             if (data == null)
@@ -70,39 +73,45 @@ namespace QuantumSport.API.Services
                 throw new ArgumentNullException(nameof(user), "User is empty");
             }
 
-            Regex wordPattern = new Regex("^[a-zA-Z- ]+$");
-            Regex phonePattern = new Regex("^[+][0-9]{10}$");
+            ValidateUserName(user.Name);
 
-            if (string.IsNullOrWhiteSpace(user.Name))
+            ValidateUserPhone(user.Phone);
+        }
+
+        private static void ValidateUserName(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new ArgumentException(nameof(user.Name), "User name is empty");
+                throw new ArgumentException(nameof(userName), "User name is empty");
             }
             else
             {
-                user.Name = user.Name.Trim();
+                userName = userName.Trim();
 
-                if (!wordPattern.IsMatch(user.Name) || user.Name.Length < 3 || user.Name.Length > 255)
+                Regex wordPattern = new ("^[a-zA-Z- ]+$");
+
+                if (!wordPattern.IsMatch(userName) || userName.Length < 3 || userName.Length > 255)
                 {
-                    throw new ArgumentException(nameof(user.Name), "User name is invalid");
+                    throw new ArgumentException(nameof(userName), "User name is invalid");
                 }
             }
+        }
 
-            if (string.IsNullOrWhiteSpace(user.Phone))
+        private static void ValidateUserPhone(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
             {
-                throw new ArgumentNullException(nameof(user.Phone), "Phone is empty");
+                throw new ArgumentNullException(nameof(phoneNumber), "Phone is empty");
             }
             else
             {
-                user.Phone = user.Phone.Trim();
+                phoneNumber = phoneNumber.Trim();
 
-                if (!user.Phone.StartsWith('+'))
-                {
-                    user.Phone = user.Phone.Insert(0, "+");
-                }
+                const string motif = @"^380\d{9}$";
 
-                if (!phonePattern.IsMatch(user.Phone))
+                if (!Regex.IsMatch(phoneNumber, motif))
                 {
-                    throw new ArgumentException(nameof(user.Phone), "Phone is invalid");
+                    throw new ArgumentException(nameof(phoneNumber), "Phone is invalid");
                 }
             }
         }
