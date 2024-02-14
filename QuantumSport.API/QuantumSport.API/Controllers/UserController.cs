@@ -52,7 +52,7 @@
         }
 
         [HttpGet]
-        [Route("/user/byPhone{phone}")]
+        [Route("/user")]
         public async Task<ActionResult> GetUser(string phone)
         {
             try
