@@ -11,10 +11,10 @@
                 await context.Users.AddRangeAsync(
                     new List<UserEntity>()
                     {
-                        new UserEntity() { Name = "Billy Herrington", Phone = "+1234567890" },
-                        new UserEntity() { Name = "Arnold Schwarzenegger", Phone = "+1000100011" },
-                        new UserEntity() { Name = "Ronnie Coleman", Phone = "+1212121212" },
-                        new UserEntity() { Name = "Vasyl Virastyuk", Phone = "+0987654321" },
+                        new UserEntity() { Name = "Billy Herrington", Phone = "380994782390" },
+                        new UserEntity() { Name = "Arnold Schwarzenegger", Phone = "380663232343" },
+                        new UserEntity() { Name = "Ronnie Coleman", Phone = "380983454875" },
+                        new UserEntity() { Name = "Vasyl Virastyuk", Phone = "380992301223" },
                     });
 
                 await context.SaveChangesAsync();
