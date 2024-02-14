@@ -107,7 +107,7 @@ namespace QuantumSport.API.Services
             {
                 phoneNumber = phoneNumber.Trim();
 
-                const string motif = @"^380\d{9}$";
+                const string motif = @"^\+380\d{9}$";
 
                 if (!Regex.IsMatch(phoneNumber, motif))
                 {
