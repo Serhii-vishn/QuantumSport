@@ -263,6 +263,23 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
+        public async Task UpdateAsync_PassingValidUserData_ReturnsUpdatedId()
+        {
+            // Arrange
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _userRepository.Setup(s => s.UpdateAsync(_fakeUserEntity)).ReturnsAsync(_fakeUserEntity.Id);
+
+            // Act
+            var result = await _userService.UpdateAsync(_fakeUserDTO);
+
+            // Assert
+            result.Should().NotBe(null);
+            result.Should().NotBe(_fakeUserEntity.Id);
+        }
+
+        [Fact]
         public async Task AddAsync_WithoutConnectionToDb_ThrowsSqlException()
         {
             // Arrange
@@ -349,6 +366,21 @@ namespace QuantumSport.UnitTests.Services
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task AddAsync_PassingValidUserData_ReturnsAddedId()
+        {
+            // Arrange
+            _mapper.Setup(s => s.Map<UserDTO>(
+               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _userRepository.Setup(s => s.AddAsync(_fakeUserEntity)).ReturnsAsync(_fakeUserEntity.Id);
+
+            // Act
+            var result = await _userService.AddAsync(_fakeUserDTO);
+
+            // Assert
+            result.Should().Be(_fakeUserDTO.Id);
         }
 
         private SqlException MakeSqlException()
