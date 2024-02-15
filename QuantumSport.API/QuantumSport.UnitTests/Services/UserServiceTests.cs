@@ -1,4 +1,8 @@
-﻿namespace QuantumSport.UnitTests.Services
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Routing;
+using Moq;
+
+namespace QuantumSport.UnitTests.Services
 {
     public class UserServiceTests
     {
@@ -101,6 +105,119 @@
             result.Should().NotBeNull();
             result.Should().BeOfType<UserDTO>();
             result.Should().Be(_fakeUserDTO);
+        }
+
+        [Fact]
+        public async Task AddAsync_AddsUserSuccessfully()
+        {
+            // Arrange
+            _mapper.Setup(m => m.Map<UserEntity>(_fakeUserDTO)).Returns(_fakeUserEntity);
+            _userRepository.Setup(r => r.AddAsync(_fakeUserEntity)).ReturnsAsync(1);
+
+            // Act
+            var result = await _userService.AddAsync(_fakeUserDTO);
+
+            // Assert
+            result.Should().Be(_fakeUserDTO.Id);
+        }
+
+        [Fact]
+        public async Task AddAsync_InvalidUserDTO_ThrowsArgumentException()
+        {
+            // Arrange
+            var invalidUserDTO = new UserDTO(); // Create an invalid UserDTO object
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => _userService.AddAsync(invalidUserDTO));
+        }
+
+        [Fact]
+        public async Task AddAsync_ErrorAddingUser_ThrowsException()
+        {
+            // Arrange
+            _mapper.Setup(m => m.Map<UserEntity>(_fakeUserDTO)).Returns(_fakeUserEntity);
+            _userRepository.Setup(r => r.AddAsync(_fakeUserEntity)).ThrowsAsync(new Exception("Error adding user"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_UpdateUserSuccessfull()
+        {
+            // Arrange
+            _mapper.Setup(m => m.Map<UserEntity>(_fakeUserDTO)).Returns(_fakeUserEntity);
+            _userRepository.Setup(r => r.UpdateAsync(_fakeUserEntity)).ReturnsAsync(1);
+
+            // Act
+            var result = await _userService.UpdateAsync(_fakeUserDTO);
+
+            // Assert
+            result.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_UserNotFound_ThrowsUserNotFoundException()
+        {
+            // Arrange
+            _userRepository.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(() => new UserEntity());
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UserNotFoundException>(() => _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_InvalidUserDTO_ThrowsArgumentException()
+        {
+            // Arrange
+            var invalidUserDTO = new UserDTO(); // Create an invalid UserDTO object
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => _userService.UpdateAsync(invalidUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ErrorUpdatingUser_ThrowsException()
+        {
+            // Arrange
+            _mapper.Setup(m => m.Map<UserEntity>(_fakeUserDTO)).Returns(_fakeUserEntity);
+            _userRepository.Setup(r => r.UpdateAsync(_fakeUserEntity)).ThrowsAsync(new Exception("Error updating user"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task DeleteAsync_DeleteUserSuccessfully()
+        {
+            // Arrange
+            _userRepository.Setup(r => r.DeleteAsync(_fakeUserEntity.Id)).ReturnsAsync(1);
+
+            // Act
+            var result = await _userService.DeleteAsync(_fakeUserEntity.Id);
+
+            // Assert
+            result.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_UserNotFound_ThrowsUserNotFoundException()
+        {
+            // Arrange
+            _userRepository.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(() => new UserEntity());
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UserNotFoundException>(() => _userService.DeleteAsync(_fakeUserEntity.Id));
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ErrorDeletingUser_ThrowsException()
+        {
+            // Arrange
+            _userRepository.Setup(r => r.DeleteAsync(_fakeUserEntity.Id)).ThrowsAsync(new Exception("Error deleting user"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _userService.DeleteAsync(_fakeUserEntity.Id));
         }
 
         private SqlException MakeSqlException()
