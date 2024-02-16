@@ -41,7 +41,7 @@
         }
 
         [Fact]
-        public async Task ListAsync_ReturnsListUserDTO()
+        public async Task ListAsync_WhenCalled_ReturnsListUserDTO()
         {
             // Arrange
             var fakeUserEntityList = new List<UserEntity>() { _fakeUserEntity };
