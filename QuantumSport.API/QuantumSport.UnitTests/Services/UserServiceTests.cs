@@ -1,6 +1,4 @@
-﻿using Moq;
-
-namespace QuantumSport.UnitTests.Services
+﻿namespace QuantumSport.UnitTests.Services
 {
     public class UserServiceTests
     {
@@ -156,8 +154,7 @@ namespace QuantumSport.UnitTests.Services
         {
             // Arrange
             UserEntity nullUserEntity = null!;
-            _mapper.Setup(s => s.Map<UserDTO>(
-               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _fakeUserDTO.Id = id;
             _userRepository.Setup(s => s.GetAsync(id)).ReturnsAsync(nullUserEntity);
 
             // Act and Assert
@@ -169,38 +166,37 @@ namespace QuantumSport.UnitTests.Services
         {
             // Arrange
             var sqlEx = MakeSqlException();
-            _mapper.Setup(s => s.Map<UserDTO>(
-               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
             _mapper.Setup(s => s.Map<UserEntity>(
                It.Is<UserDTO>(i => i.Equals(_fakeUserDTO)))).Returns(_fakeUserEntity);
-            _userRepository.Setup(s => s.GetAsync(_fakeUserDTO.Id)).ReturnsAsync(_fakeUserEntity);
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
             _userRepository.Setup(s => s.UpdateAsync(_fakeUserEntity)).ThrowsAsync(sqlEx);
 
             // Act and Assert
             await Assert.ThrowsAsync<SqlException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
         }
 
-        [Fact]
-        public async Task UpdateAsync_EmptyUserName_ThrowsArgumentException()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task UpdateAsync_UserNameIsNullEmptyOrWhitespace_ThrowsArgumentException(string name)
         {
             // Arrange
+            _fakeUserDTO.Name = name;
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
-            _fakeUserDTO.Name = " ";
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
         }
 
-        [Fact]
-        public async Task UpdateAsync_UserNameWithWrongPattern_ThrowsArgumentException()
+        [Theory]
+        [InlineData("87687abc6")]
+        [InlineData(" %^@()46")]
+        public async Task UpdateAsync_UserNameConsistsOfNonAlphabetSymbols_ThrowsArgumentException(string name)
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
-            _fakeUserDTO.Name = " ZVZ@#$";
+            _fakeUserDTO.Name = name;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
@@ -211,8 +207,6 @@ namespace QuantumSport.UnitTests.Services
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
             _fakeUserDTO.Name = "Aa";
 
             // Act and Assert
@@ -220,50 +214,46 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_UserNameIsTooLong_ThrowsArgumentException()
+        public async Task UpdateAsync_UserNameLengthIsMoreThan255Symblols_ThrowsArgumentException()
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
-            _fakeUserDTO.Name = "Aaa";
-            for (int i = 0; i < 255; i++)
-            {
-                _fakeUserDTO.Name += "a";
-            }
+            _fakeUserDTO.Name = GetMockStringOfSpecifiedLength(256);
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
         }
 
-        [Fact]
-        public async Task UpdateAsync_UserPhoneIsEmpty_ThrowsArgumentNullException()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task UpdateAsync_UserPhoneIsNullEmptyOrWhitespace_ThrowsArgumentNullException(string phone)
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
-            _fakeUserDTO.Phone = null!;
+            _fakeUserDTO.Phone = phone;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
         }
 
-        [Fact]
-        public async Task UpdateAsync_UserPhoneIsInvalid_ThrowsArgumentException()
+        [Theory]
+        [InlineData("!@#1567")]
+        [InlineData("0000abc99")]
+        [InlineData("+38096565OO77")]
+        public async Task UpdateAsync_UserPhoneConsistsOfNonNumericSymbols_ThrowsArgumentException(string phone)
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
-            _fakeUserDTO.Phone = "43 23 a";
+            _fakeUserDTO.Phone = phone;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
         }
 
         [Fact]
-        public async Task UpdateAsync_PassingValidUserData_ReturnsUpdatedId()
+        public async Task UpdateAsync_PassingValidUserDTO_ReturnsUpdatedId()
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
@@ -275,8 +265,7 @@ namespace QuantumSport.UnitTests.Services
             var result = await _userService.UpdateAsync(_fakeUserDTO);
 
             // Assert
-            result.Should().NotBe(null);
-            result.Should().NotBe(_fakeUserEntity.Id);
+            result.Should().NotBe(_fakeUserDTO.Id);
         }
 
         [Fact]
@@ -292,36 +281,35 @@ namespace QuantumSport.UnitTests.Services
             await Assert.ThrowsAsync<SqlException>(async () => await _userService.AddAsync(_fakeUserDTO));
         }
 
-        [Fact]
-        public async Task AddAsync_EmptyUserName_ThrowsArgumentException()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task AddAsync_UserNameIsNullEmptyOrWhitespace_ThrowsArgumentException(string name)
         {
             // Arrange
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
-            _fakeUserDTO.Name = " ";
+            _fakeUserDTO.Name = name;
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Theory]
+        [InlineData("87687abc6")]
+        [InlineData(" %^@()46")]
+        public async Task AddAsync_UserNameConsistsOfNonAlphabetSymbols_ThrowsArgumentException(string name)
+        {
+            // Arrange
+            _fakeUserDTO.Name = name;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
         }
 
         [Fact]
-        public async Task AddAsync_UserNameWithWrongPattern_ThrowsArgumentException()
+        public async Task AddAsync_UserNameLengthIsLessThan3Symbols_ThrowsArgumentException()
         {
             // Arrange
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
-            _fakeUserDTO.Name = " ZVZ@#$";
-
-            // Act and Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
-        }
-
-        [Fact]
-        public async Task AddAsync_UserNameIsLessThreeSymbols_ThrowsArgumentException()
-        {
-            // Arrange
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
             _fakeUserDTO.Name = "Aa";
 
             // Act and Assert
@@ -329,52 +317,48 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task AddAsync_UserNameIsTooLong_ThrowsArgumentException()
+        public async Task AddAsync_UserNameLengthIsMoreThan255Symblols_ThrowsArgumentException()
         {
             // Arrange
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
-            _fakeUserDTO.Name = "Aaa";
-            for (int i = 0; i < 255; i++)
-            {
-                _fakeUserDTO.Name += "a";
-            }
+            _fakeUserDTO.Name = GetMockStringOfSpecifiedLength(256);
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
         }
 
-        [Fact]
-        public async Task AddAsync_UserPhoneIsEmpty_ThrowsArgumentNullException()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task AddAsync_UserPhoneIsNullEmptyOrWhitespace_ThrowsArgumentNullException(string phone)
         {
             // Arrange
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
-            _fakeUserDTO.Phone = null!;
+            _fakeUserDTO.Phone = phone;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _userService.AddAsync(_fakeUserDTO));
         }
 
-        [Fact]
-        public async Task AddAsync_UserPhoneIsInvalid_ThrowsArgumentException()
+        [Theory]
+        [InlineData("!@#1567")]
+        [InlineData("0000abc99")]
+        [InlineData("+38096565OO77")]
+        public async Task AddAsync_UserPhoneConsistsOfNonNumericSymbols_ThrowsArgumentException(string phone)
         {
             // Arrange
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
-            _fakeUserDTO.Phone = "43 23 abc";
+            _fakeUserDTO.Phone = phone;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
         }
 
         [Fact]
-        public async Task AddAsync_PassingValidUserData_ReturnsAddedId()
+        public async Task AddAsync_PassingValidUserDTO_ReturnsAddedId()
         {
             // Arrange
-            _mapper.Setup(s => s.Map<UserDTO>(
-               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
             _userRepository.Setup(s => s.AddAsync(_fakeUserEntity)).ReturnsAsync(_fakeUserEntity.Id);
+            _mapper.Setup(s => s.Map<UserDTO>(
+                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
 
             // Act
             var result = await _userService.AddAsync(_fakeUserDTO);
@@ -398,6 +382,17 @@ namespace QuantumSport.UnitTests.Services
             }
 
             return exception;
+        }
+
+        private string GetMockStringOfSpecifiedLength(int length)
+        {
+            string mockString = "A";
+            for (int i = 0; i < length; i++)
+            {
+                mockString += "a";
+            }
+
+            return mockString;
         }
     }
 }
