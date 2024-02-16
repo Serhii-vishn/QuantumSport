@@ -16,8 +16,8 @@ namespace QuantumSport.API.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Phone = table.Column<string>(type: "nchar(11)", fixedLength: true, maxLength: 11, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
+                    Phone = table.Column<string>(type: "nchar(13)", fixedLength: true, maxLength: 13, nullable: false)
                 },
                 constraints: table =>
                 {
