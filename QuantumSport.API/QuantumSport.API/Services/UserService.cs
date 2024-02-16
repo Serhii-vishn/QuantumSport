@@ -102,17 +102,31 @@ namespace QuantumSport.API.Services
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new ArgumentException(nameof(userName), "User name is empty");
+                throw new ArgumentNullException(nameof(userName), "User name is empty");
             }
             else
             {
                 userName = userName.Trim();
 
-                Regex wordPattern = new ("^[a-zA-Z- ]+$");
-
-                if (!wordPattern.IsMatch(userName) || userName.Length < 3 || userName.Length > 255)
+                if (userName.Length < 3)
                 {
-                    throw new ArgumentException(nameof(userName), "User name is invalid");
+                    throw new ArgumentException(nameof(userName), "User name must be at least 3 characters long");
+                }
+
+                if (userName.Length > 55)
+                {
+                    throw new ArgumentException(nameof(userName), "User name must be maximum of 55 characters");
+                }
+
+                Regex englishWordPattern = new ("^[a-zA-Z -]+$");
+                Regex ukrainianWordPattern = new ("^[АаБбВвГгҐґДдЕеЄєЖжЗзИиІіЇїЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщьЮюЯя -]+$");
+
+                if (!englishWordPattern.IsMatch(userName))
+                {
+                    if (!ukrainianWordPattern.IsMatch(userName))
+                    {
+                        throw new ArgumentException(nameof(userName), "User name must consist of english or ukrainian letters only");
+                    }
                 }
             }
         }
