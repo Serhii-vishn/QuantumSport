@@ -15,6 +15,11 @@ namespace QuantumSport.API.Services
 
         public async Task<UserDTO> GetAsync(int id)
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid user id");
+            }
+
             var data = await _userRepository.GetAsync(id);
 
             if (data == null)
