@@ -59,8 +59,8 @@ namespace QuantumSport.API.Services
 
         public async Task<int> UpdateAsync(UserDTO user)
         {
-            await GetAsync(user.Id);
             ValidateUser(user);
+            await GetAsync(user.Id);
             return await _userRepository.UpdateAsync(_mapper.Map<UserEntity>(user));
         }
 
