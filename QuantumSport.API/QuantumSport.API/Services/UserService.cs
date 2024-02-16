@@ -53,14 +53,30 @@ namespace QuantumSport.API.Services
         public async Task<int> AddAsync(UserDTO user)
         {
             ValidateUser(user);
+
+            var data = await _userRepository.GetAsync(user.Phone);
+            if (data != null)
+            {
+                throw new ArgumentException($"User with phone = {user.Phone} already exists");
+            }
+
             user.Id = default;
+
             return await _userRepository.AddAsync(_mapper.Map<UserEntity>(user));
         }
 
         public async Task<int> UpdateAsync(UserDTO user)
         {
             ValidateUser(user);
+
+            var data = await _userRepository.GetAsync(user.Phone);
+            if (data != null)
+            {
+                throw new ArgumentException($"User with phone = {user.Phone} already exists");
+            }
+
             await GetAsync(user.Id);
+
             return await _userRepository.UpdateAsync(_mapper.Map<UserEntity>(user));
         }
 
