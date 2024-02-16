@@ -44,6 +44,11 @@
                 _logger.LogError(ex.Message, ex);
                 return NotFound(ex.Message);
             }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
@@ -65,6 +70,11 @@
             {
                 _logger.LogError(ex.Message, ex);
                 return NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {

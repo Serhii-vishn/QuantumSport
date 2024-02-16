@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using AutoMapper.Execution;
 
 namespace QuantumSport.API.Services
 {
@@ -107,9 +106,9 @@ namespace QuantumSport.API.Services
             {
                 phoneNumber = phoneNumber.Trim();
 
-                const string motif = @"^\+380\d{9}$";
+                const string ukrainianPhoneNumberPattern = @"^\+380\d{9}$";
 
-                if (!Regex.IsMatch(phoneNumber, motif))
+                if (!Regex.IsMatch(phoneNumber, ukrainianPhoneNumberPattern))
                 {
                     throw new ArgumentException(nameof(phoneNumber), "Phone is invalid");
                 }
