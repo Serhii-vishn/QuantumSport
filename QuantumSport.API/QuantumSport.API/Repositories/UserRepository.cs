@@ -15,6 +15,12 @@
             return user!;
         }
 
+        public async Task<UserEntity> GetAsync(string phoneNumber)
+        {
+            var user = await _context.Users.Where(u => string.Equals(u.Phone, phoneNumber)).SingleOrDefaultAsync();
+            return user!;
+        }
+
         public async Task<IList<UserEntity>> ListAsync()
         {
             return await _context.Users.ToListAsync();

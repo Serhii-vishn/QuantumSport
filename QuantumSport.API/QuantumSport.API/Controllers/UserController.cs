@@ -44,6 +44,38 @@
                 _logger.LogError(ex.Message, ex);
                 return NotFound(ex.Message);
             }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet]
+        [Route("/user")]
+        public async Task<ActionResult> GetUser(string phone)
+        {
+            try
+            {
+                var result = await _userService.GetAsync(phone);
+                _logger.LogInformation($"User with id = {result.Id} was received");
+                return Ok(result);
+            }
+            catch (UserNotFoundException ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
