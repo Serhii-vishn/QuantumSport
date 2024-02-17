@@ -16,7 +16,7 @@ namespace QuantumSport.API.Data.EntityConfigurations
 
             builder.Property(u => u.Name)
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(55);
 
             builder.Property(u => u.Phone)
                 .HasMaxLength(13)

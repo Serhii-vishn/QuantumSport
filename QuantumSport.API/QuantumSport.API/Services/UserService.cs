@@ -15,6 +15,11 @@ namespace QuantumSport.API.Services
 
         public async Task<UserDTO> GetAsync(int id)
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid user id");
+            }
+
             var data = await _userRepository.GetAsync(id);
 
             if (data == null)
@@ -48,14 +53,30 @@ namespace QuantumSport.API.Services
         public async Task<int> AddAsync(UserDTO user)
         {
             ValidateUser(user);
+
+            var data = await _userRepository.GetAsync(user.Phone);
+            if (data != null)
+            {
+                throw new ArgumentException($"User with phone = {user.Phone} already exists");
+            }
+
             user.Id = default;
+
             return await _userRepository.AddAsync(_mapper.Map<UserEntity>(user));
         }
 
         public async Task<int> UpdateAsync(UserDTO user)
         {
-            await GetAsync(user.Id);
             ValidateUser(user);
+
+            var data = await _userRepository.GetAsync(user.Phone);
+            if (data != null)
+            {
+                throw new ArgumentException($"User with phone = {user.Phone} already exists");
+            }
+
+            await GetAsync(user.Id);
+
             return await _userRepository.UpdateAsync(_mapper.Map<UserEntity>(user));
         }
 
@@ -81,17 +102,31 @@ namespace QuantumSport.API.Services
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new ArgumentException(nameof(userName), "User name is empty");
+                throw new ArgumentNullException(nameof(userName), "User name is empty");
             }
             else
             {
                 userName = userName.Trim();
 
-                Regex wordPattern = new ("^[a-zA-Z- ]+$");
-
-                if (!wordPattern.IsMatch(userName) || userName.Length < 3 || userName.Length > 255)
+                if (userName.Length < 3)
                 {
-                    throw new ArgumentException(nameof(userName), "User name is invalid");
+                    throw new ArgumentException(nameof(userName), "User name must be at least 3 characters long");
+                }
+
+                if (userName.Length > 55)
+                {
+                    throw new ArgumentException(nameof(userName), "User name must be maximum of 55 characters");
+                }
+
+                Regex englishWordPattern = new ("^[a-zA-Z -]+$");
+                Regex ukrainianWordPattern = new ("^[АаБбВвГгҐґДдЕеЄєЖжЗзИиІіЇїЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщьЮюЯя -]+$");
+
+                if (!englishWordPattern.IsMatch(userName))
+                {
+                    if (!ukrainianWordPattern.IsMatch(userName))
+                    {
+                        throw new ArgumentException(nameof(userName), "User name must consist of english or ukrainian letters only");
+                    }
                 }
             }
         }
