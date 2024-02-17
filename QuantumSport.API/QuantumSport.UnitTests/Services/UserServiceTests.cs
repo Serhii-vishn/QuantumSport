@@ -75,7 +75,16 @@
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public async Task GetAsync_PassingInvalidId_ThrowsUserNotFoundException(int id)
+        public async Task GetAsync_PassingInvalidId_ThrowsArgumentException(int id)
+        {
+            // Arrange, Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.GetAsync(id));
+        }
+
+        [Theory]
+        [InlineData(10000)]
+        [InlineData(1111111)]
+        public async Task GetAsync_PassingNonExistentId_ThrowsUserNotFoundException(int id)
         {
             // Arrange
             UserEntity nullUserEntity = null!;
