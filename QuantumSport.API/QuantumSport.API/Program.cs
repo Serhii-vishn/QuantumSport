@@ -5,9 +5,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<AppConfig>(configuration);
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<ICoachRepository, CoachRepository>();
 
 builder.Services.AddTransient<IUserService, UserService>();
 

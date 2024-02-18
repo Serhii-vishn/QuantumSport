@@ -10,3 +10,5 @@ global using QuantumSport.API.Services;
 global using QuantumSport.API.Models.DTOs;
 global using AutoMapper;
 global using QuantumSport.API.Exceptions;
+global using QuantumSport.API.Configurations;
+global using Microsoft.Extensions.Options;
