@@ -1,4 +1,5 @@
 ﻿global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using QuantumSport.API.Data;
 global using QuantumSport.API.Data.Entities;
 global using Microsoft.AspNetCore.Mvc;
