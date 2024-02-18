@@ -46,7 +46,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task ListAsync_ReturnsListUserDTO()
+        public async Task ListAsync_WhenCalled_ReturnsListUserDTO()
         {
             // Arrange
             var fakeUserEntityList = new List<UserEntity>() { _fakeUserEntity };
@@ -80,7 +80,7 @@ namespace QuantumSport.UnitTests.Services
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public async Task GetAsync_PassingInvalidId_ThrowsUserNotFoundException(int id)
+        public async Task GetAsync_PassingInvalidId_ThrowsArgumentException(int id)
         {
             // Arrange
             // No need to set up the repository mock since the method throws ArgumentException
@@ -99,7 +99,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task GetAsync_ReturnsUserDTO()
+        public async Task GetAsync_PassingValidId_ReturnsUserDTO()
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
@@ -132,7 +132,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task AddAsync_AddsUserSuccessfully()
+        public async Task AddAsync_PassingValidUserDTO_ReturnsAddedId()
         {
             // Arrange
             _fakeUserDTO.Phone = "+380123456789";
@@ -141,20 +141,13 @@ namespace QuantumSport.UnitTests.Services
             _userRepository.Setup(r => r.GetAsync(_fakeUserDTO.Phone)).ReturnsAsync(null ?? new UserEntity());
             _userRepository.Setup(r => r.AddAsync(_fakeUserEntity)).ReturnsAsync(1);
 
-            // Act
-            try
-            {
-                var result = await _userService.AddAsync(_fakeUserDTO);
-            }
-            catch (ArgumentException ex)
-            {
-                // Assert
-                ex.Message.Should().Be("User with phone = +380123456789 already exists");
-            }
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => _userService.AddAsync(_fakeUserDTO));
+            exception.Message.Should().Be("User with phone = +380123456789 already exists");
         }
 
         [Fact]
-        public async Task AddAsync_WhenDuplicateUserId_ShouldPreventRepositoryAddCall()
+        public async Task AddAsync_WhenDuplicateUserId_PreventsRepositoryAddCall()
         {
             // Arrange
             var existingUser = new UserDTO { Id = 1, Name = "existingName", Phone = "+1234567890" };
@@ -167,7 +160,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task AddAsync_WhenNameExceedsMaxLength_ShouldThrowArgumentException()
+        public async Task AddAsync_WhenNameExceedsMaxLength_ThrowsArgumentException()
         {
             // Arrange
             var userWithLongName = new UserDTO()
@@ -182,7 +175,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task AddAsync_WhenNameContainsNonAlphabeticCharacters_ShouldThrowException()
+        public async Task AddAsync_WhenNameContainsNonAlphabeticCharacters_ThrowsArgumentException()
         {
             // Arrange
             var userWithNonAlphabeticCharacters = new UserDTO()
@@ -197,7 +190,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task AddAsync_NameShouldContainAtLeastThreeCharacters()
+        public async Task AddAsync_NameContainsLessThanThreeCharacters_ThrowsArgumentException()
         {
             // Arrange
             _mapper.Setup(s => s.Map<UserDTO>(
@@ -209,7 +202,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task AddAsync_WhenAnyFieldIsEmpty_ShouldThrowException()
+        public async Task AddAsync_WhenAnyFieldIsEmpty_ThrowsArgumentNullException()
         {
             // Arrange
             var userWithEmptyFields = new UserDTO()
@@ -239,7 +232,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task AddAsync_ErrorAddingUser_ThrowsException()
+        public async Task AddAsync_ErrorAddingUser_ThrowsArgumentException()
         {
             // Arrange
             _userRepository.Setup(repo => repo.GetAsync(It.IsAny<string>())).ReturnsAsync(null ?? new UserEntity());
@@ -262,19 +255,20 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task DeleteAsync_NoConnectionToDb_ThrowsSqlException()
+        public async Task UpdateAsync_NoConnectionToDb_ThrowsSqlException()
         {
             // Arrange
-            var userId = 1;
+            var fakeUserDTO = new UserDTO { Id = 1, Name = "existingName", Phone = "+380123456789" };
             var sqlEx = MakeSqlException();
-            _userRepository.Setup(s => s.GetAsync(userId)).ThrowsAsync(sqlEx);
+
+            _userRepository.Setup(s => s.GetAsync(fakeUserDTO.Phone)).ThrowsAsync(sqlEx);
 
             // Act and Assert
-            await Assert.ThrowsAsync<SqlException>(async () => await _userService.DeleteAsync(userId));
+            await Assert.ThrowsAsync<SqlException>(async () => await _userService.UpdateAsync(fakeUserDTO));
         }
 
         [Fact]
-        public async Task UpdateAsync_UpdateUserSuccessfully()
+        public async Task UpdateAsync_PassingValidUserDTO_ReturnsAddedId()
         {
             // Arrange
             var existingUserEntity = new UserEntity { Id = 1, Name = "existing", Phone = "+1234567890" };
@@ -290,10 +284,10 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_UserNotFound_ThrowsUserNotFoundException()
+        public async Task UpdateAsync_UserNotFound_ThrowsArgumentException()
         {
             // Arrange
-            _userRepository.Setup(r => r.GetAsync(_fakeUserDTO.Phone)).ReturnsAsync(() => new UserEntity());
+            _userRepository.Setup(r => r.GetAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity());
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() => _userService.UpdateAsync(_fakeUserDTO));
@@ -303,15 +297,15 @@ namespace QuantumSport.UnitTests.Services
         public async Task UpdateAsync_InvalidUserDTO_ThrowsArgumentException()
         {
             // Arrange
-            var existingUserEntity = new UserEntity { Id = 2, Name = "existing", Phone = "+1234567890" };
+            var existingUserEntity = new UserEntity { Id = 2, Name = "existing", Phone = "+380998887766" };
             _userRepository.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(existingUserEntity);
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => _userService.UpdateAsync(new UserDTO { Id = 1, Name = "name", Phone = "+1234567890" }));
+            await Assert.ThrowsAsync<ArgumentException>(() => _userService.UpdateAsync(new UserDTO { Id = 1, Name = "name", Phone = "+38099777" }));
         }
 
         [Fact]
-        public async Task UpdateAsync_ErrorUpdatingUser_ThrowsException()
+        public async Task UpdateAsync_ErrorUpdatingUser_ThrowsArgumentException()
         {
             // Arrange
             _userRepository.Setup(repo => repo.GetAsync(It.IsAny<string>())).ReturnsAsync(_fakeUserEntity);
@@ -322,7 +316,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_WhenNameExceedsMaxLength_ShouldThrowArgumentException()
+        public async Task UpdateAsync_WhenNameExceedsMaxLength_ThrowsArgumentException()
         {
             // Arrange
             var userWithLongName = new UserDTO()
@@ -339,7 +333,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_WhenNameContainsNonAlphabeticCharacters_ShouldThrowException()
+        public async Task UpdateAsync_WhenNameContainsNonAlphabeticCharacters_ThrowsArgumentException()
         {
             // Arrange
             var userWithNonAlphabeticCharacters = new UserDTO()
@@ -356,13 +350,13 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_WhenAnyFieldIsEmpty_ShouldThrowException()
+        public async Task UpdateAsync_WhenAnyFieldIsEmpty_ThrowsArgumentException()
         {
             // Arrange
             var userWithEmptyFields = new UserDTO()
             {
                 Id = 1,
-                Name = " ",
+                Name = string.Empty,
                 Phone = string.Empty,
             };
 
@@ -384,7 +378,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_NameShouldContainAtLeastThreeCharacters()
+        public async Task UpdateAsync_NameContainsLessThanThreeCharacters_ThrowsArgumentException()
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
@@ -410,20 +404,19 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_NoConnectionToDb_ThrowsSqlException()
+        public async Task DeleteAsync_NoConnectionToDb_ThrowsSqlException()
         {
             // Arrange
-            var fakeUserDTO = new UserDTO { Id = 1, Name = "existingName", Phone = "+380123456789" };
+            var userId = 1;
             var sqlEx = MakeSqlException();
-
-            _userRepository.Setup(s => s.GetAsync(fakeUserDTO.Phone)).ThrowsAsync(sqlEx);
+            _userRepository.Setup(s => s.GetAsync(userId)).ThrowsAsync(sqlEx);
 
             // Act and Assert
-            await Assert.ThrowsAsync<SqlException>(async () => await _userService.UpdateAsync(fakeUserDTO));
+            await Assert.ThrowsAsync<SqlException>(async () => await _userService.DeleteAsync(userId));
         }
 
         [Fact]
-        public async Task DeleteAsync_DeleteUserSuccessfully()
+        public async Task DeleteAsync_PassingValidUserDTO_ReturnsAddedId()
         {
             // Arrange
             _userRepository.Setup(r => r.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
@@ -448,7 +441,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task DeleteAsync_ErrorDeletingUser_ThrowsException()
+        public async Task DeleteAsync_ErrorDeletingUser_ThrowsUserNotFoundException()
         {
             // Arrange
             _userRepository.Setup(r => r.DeleteAsync(_fakeUserEntity.Id)).ThrowsAsync(new Exception("Error deleting user"));
@@ -458,7 +451,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task DeleteAsync_WhenNameExceedsMaxLength_ShouldThrowArgumentException()
+        public async Task DeleteAsync_WhenNameExceedsMaxLength_ThrowsUserNotFoundException()
         {
             // Arrange
             var userWithLongName = new UserDTO()
@@ -473,7 +466,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task DeleteAsync_WhenNameContainsNonAlphabeticCharacters_ShouldThrowException()
+        public async Task DeleteAsync_WhenNameContainsNonAlphabeticCharacters_ThrowsUserNotFoundException()
         {
             // Arrange
             var userWithNonAlphabeticCharacters = new UserDTO()
@@ -488,7 +481,7 @@ namespace QuantumSport.UnitTests.Services
         }
 
         [Fact]
-        public async Task DeleteAsync_WhenAnyFieldIsEmpty_ShouldThrowException()
+        public async Task DeleteAsync_WhenAnyFieldIsEmpty_ThrowsUserNotFoundException()
         {
             // Arrange
             var userWithEmptyFields = new UserDTO()
