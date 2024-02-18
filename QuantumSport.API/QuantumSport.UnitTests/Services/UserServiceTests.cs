@@ -1,4 +1,9 @@
-﻿namespace QuantumSport.UnitTests.Services
+﻿using System;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Xunit.Sdk;
+
+namespace QuantumSport.UnitTests.Services
 {
     public class UserServiceTests
     {
@@ -27,6 +32,17 @@
             _mapper = new Mock<IMapper>();
 
             _userService = new UserService(_userRepository.Object, _mapper.Object);
+        }
+
+        [Fact]
+        public async Task ListAsync_WhenUnexpectedError_ThrowsException()
+        {
+            // Arrange
+            var unexpectedEx = new Exception();
+            _userRepository.Setup(s => s.ListAsync()).ThrowsAsync(unexpectedEx);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<Exception>(async () => await _userService.ListAsync());
         }
 
         [Fact]
@@ -59,6 +75,17 @@
             result.First().Should().NotBeNull();
             result.First().Should().BeOfType<UserDTO>();
             result.First().Should().Be(_fakeUserDTO);
+        }
+
+        [Fact]
+        public async Task GetAsync_WhenUnexpectedError_ThrowsException()
+        {
+            // Arrange
+            var unexpectEx = new Exception();
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ThrowsAsync(unexpectEx);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<Exception>(async () => await _userService.GetAsync(_fakeUserDTO.Id));
         }
 
         [Fact]
@@ -132,12 +159,38 @@
         }
 
         [Fact]
+        public async Task DeleteAsync_WhenUnexpectedError_ThrowsException()
+        {
+            // Arrange
+            var unexpectedEx = new Exception();
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _userRepository.Setup(s => s.DeleteAsync(_fakeUserEntity.Id)).ThrowsAsync(unexpectedEx);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<Exception>(async () => await _userService.DeleteAsync(_fakeUserDTO.Id));
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ErrorWhenUpdatingDb_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var dbUpdateEx = new DbUpdateException();
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _mapper.Setup(s => s.Map<UserDTO>(
+               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _userRepository.Setup(s => s.DeleteAsync(_fakeUserEntity.Id)).ThrowsAsync(dbUpdateEx);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<DbUpdateException>(async () => await _userService.DeleteAsync(_fakeUserDTO.Id));
+        }
+
+        [Fact]
         public async Task DeleteAsync_PassingValidId_ReturnsDeletedId()
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
-            _mapper.Setup(s => s.Map<UserDTO>(
-               It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
             _userRepository.Setup(s => s.DeleteAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity.Id);
 
             // Act
@@ -175,6 +228,34 @@
             await Assert.ThrowsAsync<SqlException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
         }
 
+        [Fact]
+        public async Task UpdateAsync_ErrorWhenUpdatingDb_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var dbUpdateEx = new DbUpdateException();
+            _mapper.Setup(s => s.Map<UserEntity>(
+               It.Is<UserDTO>(i => i.Equals(_fakeUserDTO)))).Returns(_fakeUserEntity);
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _userRepository.Setup(s => s.UpdateAsync(_fakeUserEntity)).ThrowsAsync(dbUpdateEx);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<DbUpdateException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WhenUnexpectedError_ThrowsException()
+        {
+            // Arrange
+            var unexpectedEx = new Exception();
+            _mapper.Setup(s => s.Map<UserEntity>(
+               It.Is<UserDTO>(i => i.Equals(_fakeUserDTO)))).Returns(_fakeUserEntity);
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _userRepository.Setup(s => s.UpdateAsync(_fakeUserEntity)).ThrowsAsync(unexpectedEx);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<Exception>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -203,7 +284,7 @@
         }
 
         [Fact]
-        public async Task UpdateAsync_UserNameIsLessThreeSymbols_ThrowsArgumentException()
+        public async Task UpdateAsync_UserNameLengthIsLessThan3Symbols_ThrowsArgumentException()
         {
             // Arrange
             _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
@@ -236,6 +317,20 @@
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+        }
+
+        [Theory]
+        [InlineData("+123456789")]
+        [InlineData("+12")]
+        [InlineData("+123456789012")]
+        public async Task UpdateAsync_UserPhoneLengthNotEqual11_ThrowsArgumentException(string phone)
+        {
+            // Arrange
+            _userRepository.Setup(s => s.GetAsync(_fakeUserEntity.Id)).ReturnsAsync(_fakeUserEntity);
+            _fakeUserDTO.Phone = phone;
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
         }
 
         [Theory]
@@ -279,6 +374,32 @@
 
             // Act and Assert
             await Assert.ThrowsAsync<SqlException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task AddAsync_ErrorWhenUpdatingDb_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var dbUpdateEx = new DbUpdateException();
+            _userRepository.Setup(s => s.AddAsync(_fakeUserEntity)).ThrowsAsync(dbUpdateEx);
+            _mapper.Setup(s => s.Map<UserEntity>(
+             It.Is<UserDTO>(i => i.Equals(_fakeUserDTO)))).Returns(_fakeUserEntity);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<DbUpdateException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Fact]
+        public async Task AddAsync_WhenUnexpectedError_ThrowsException()
+        {
+            // Arrange
+            var unexpectedEx = new Exception();
+            _mapper.Setup(s => s.Map<UserEntity>(
+             It.Is<UserDTO>(i => i.Equals(_fakeUserDTO)))).Returns(_fakeUserEntity);
+            _userRepository.Setup(s => s.AddAsync(_fakeUserEntity)).ThrowsAsync(unexpectedEx);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<Exception>(async () => await _userService.AddAsync(_fakeUserDTO));
         }
 
         [Theory]
@@ -326,6 +447,13 @@
             await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
         }
 
+        [Fact]
+        public async Task AddAsync_UserDTOIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange, Act and Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _userService.AddAsync(null!));
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -337,6 +465,19 @@
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _userService.AddAsync(_fakeUserDTO));
+        }
+
+        [Theory]
+        [InlineData("+123456789")]
+        [InlineData("+12")]
+        [InlineData("+123456789012")]
+        public async Task AddAsync_UserPhoneLengthNotEqual11_ThrowsArgumentException(string phone)
+        {
+            // Arrange
+            _fakeUserDTO.Phone = phone;
+
+            // Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.AddAsync(_fakeUserDTO));
         }
 
         [Theory]
@@ -357,14 +498,14 @@
         {
             // Arrange
             _userRepository.Setup(s => s.AddAsync(_fakeUserEntity)).ReturnsAsync(_fakeUserEntity.Id);
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _mapper.Setup(s => s.Map<UserEntity>(
+                It.Is<UserDTO>(i => i.Equals(_fakeUserDTO)))).Returns(_fakeUserEntity);
 
             // Act
             var result = await _userService.AddAsync(_fakeUserDTO);
 
             // Assert
-            result.Should().Be(_fakeUserDTO.Id);
+            result.Should().Be(_fakeUserEntity.Id);
         }
 
         private SqlException MakeSqlException()
@@ -386,13 +527,13 @@
 
         private string GetMockStringOfSpecifiedLength(int length)
         {
-            string mockString = "A";
+            StringBuilder mockString = new StringBuilder("A", length);
             for (int i = 0; i < length; i++)
             {
-                mockString += "a";
+                mockString.Append(new char[] { 'a' });
             }
 
-            return mockString;
+            return mockString.ToString();
         }
     }
 }
