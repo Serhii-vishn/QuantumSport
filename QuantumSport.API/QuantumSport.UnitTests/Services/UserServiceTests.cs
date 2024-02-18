@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Routing;
 using Moq;
@@ -188,16 +188,12 @@ namespace QuantumSport.UnitTests.Services
             var userWithNonAlphabeticCharacters = new UserDTO()
             {
                 Id = 0,
-                Name = "name$%123", // Name containing non-alphabetic characters
+                Name = "name$%123",
                 Phone = "+1234567890",
             };
 
             // Act + Assert
             await Assert.ThrowsAsync<ArgumentException>(() => _userService.AddAsync(userWithNonAlphabeticCharacters));
-
-            // Additional check with regular expression
-            var regex = new Regex(@"\P{L}");
-            Assert.Matches(regex, userWithNonAlphabeticCharacters.Name);
         }
 
         [Fact]
@@ -224,38 +220,30 @@ namespace QuantumSport.UnitTests.Services
             };
 
             // Act + Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-            {
-                if (string.IsNullOrWhiteSpace(userWithEmptyFields.Name))
-                {
-                    throw new ArgumentException("User name is empty", nameof(userWithEmptyFields.Name));
-                }
-
-                if (string.IsNullOrWhiteSpace(userWithEmptyFields.Phone))
-                {
-                    throw new ArgumentException("User phone is empty", nameof(userWithEmptyFields.Phone));
-                }
-
-                return _userService.UpdateAsync(userWithEmptyFields);
-            });
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _userService.AddAsync(userWithEmptyFields));
         }
 
         [Fact]
         public async Task AddAsync_InvalidUserDTO_ThrowsArgumentException()
         {
             // Arrange
-            var existingUserEntity = new UserEntity { Id = 2, Name = "existing", Phone = "+1234567890" };
-            _userRepository.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(existingUserEntity);
+            var invalidUserDTO = new UserDTO()
+            {
+                Id = 1,
+                Name = "name",
+                Phone = "invalidPhoneNumber",
+            };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => _userService.AddAsync(new UserDTO { Name = "name", Phone = "+1234567890" }));
+            await Assert.ThrowsAsync<ArgumentException>(() => _userService.AddAsync(invalidUserDTO));
         }
 
         [Fact]
         public async Task AddAsync_ErrorAddingUser_ThrowsException()
         {
             // Arrange
-            _userRepository.Setup(repo => repo.GetAsync(It.IsAny<string>())).ReturnsAsync(_fakeUserEntity);
+            _userRepository.Setup(repo => repo.GetAsync(It.IsAny<string>())).ReturnsAsync(null ?? new UserEntity());
+            _userRepository.Setup(repo => repo.AddAsync(It.IsAny<UserEntity>())).ReturnsAsync(0);
 
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() => _userService.AddAsync(_fakeUserDTO));
@@ -294,7 +282,7 @@ namespace QuantumSport.UnitTests.Services
             _userRepository.Setup(x => x.UpdateAsync(It.IsAny<UserEntity>())).ReturnsAsync(1);
 
             // Act
-            _fakeUserDTO.Phone = "+380123456789"; // Set a different phone number
+            _fakeUserDTO.Phone = "+380123456789";
             var result = await _userService.UpdateAsync(_fakeUserDTO);
 
             // Assert
@@ -357,7 +345,7 @@ namespace QuantumSport.UnitTests.Services
             var userWithNonAlphabeticCharacters = new UserDTO()
             {
                 Id = 0,
-                Name = "name$%123", // Name containing non-alphabetic characters
+                Name = "name$%123",
                 Phone = "+1234567890",
             };
 
@@ -365,10 +353,6 @@ namespace QuantumSport.UnitTests.Services
 
             // Act + Assert
             await Assert.ThrowsAsync<ArgumentException>(() => _userService.UpdateAsync(userWithNonAlphabeticCharacters));
-
-            // Additional check with regular expression
-            var regex = new Regex(@"\P{L}");
-            Assert.Matches(regex, userWithNonAlphabeticCharacters.Name);
         }
 
         [Fact]
@@ -495,16 +479,12 @@ namespace QuantumSport.UnitTests.Services
             var userWithNonAlphabeticCharacters = new UserDTO()
             {
                 Id = 1,
-                Name = "name$%123", // Name containing non-alphabetic characters
+                Name = "name$%123",
                 Phone = "+1234567890",
             };
 
             // Act + Assert
             await Assert.ThrowsAsync<UserNotFoundException>(() => _userService.DeleteAsync(userWithNonAlphabeticCharacters.Id));
-
-            // Additional check with regular expression
-            var regex = new Regex(@"\P{L}");
-            Assert.Matches(regex, userWithNonAlphabeticCharacters.Name);
         }
 
         [Fact]
