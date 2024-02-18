@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace QuantumSport.API.Data.EntityConfigurations
+﻿namespace QuantumSport.API.Data.EntityConfigurations
 {
     public class UserEntityTypeConfiguration : IEntityTypeConfiguration<UserEntity>
     {
