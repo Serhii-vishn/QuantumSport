@@ -47,7 +47,7 @@ namespace QuantumSport.API.Services
         public async Task<IList<UserDTO>> ListAsync()
         {
             var data = await _userRepository.ListAsync();
-            return data.Select(d => _mapper.Map<UserDTO>(d)).ToList();
+            return _mapper.Map<IList<UserDTO>>(data);
         }
 
         public async Task<int> AddAsync(UserDTO user)
