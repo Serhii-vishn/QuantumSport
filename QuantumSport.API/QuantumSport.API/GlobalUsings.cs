@@ -1,4 +1,5 @@
 ﻿global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using QuantumSport.API.Data;
 global using QuantumSport.API.Data.Entities;
 global using Microsoft.AspNetCore.Mvc;
@@ -7,5 +8,8 @@ global using QuantumSport.API.Repositories;
 global using QuantumSport.API.Services.Interfaces;
 global using QuantumSport.API.Services;
 global using QuantumSport.API.Models.DTOs;
+global using QuantumSport.API.Models.Responses;
 global using AutoMapper;
 global using QuantumSport.API.Exceptions;
+global using QuantumSport.API.Configurations;
+global using Microsoft.Extensions.Options;

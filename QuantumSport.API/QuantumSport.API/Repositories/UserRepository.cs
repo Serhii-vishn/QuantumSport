@@ -9,10 +9,16 @@
             _context = context;
         }
 
-        public async Task<UserEntity> GetAsync(int id)
+        public async Task<UserEntity?> GetAsync(int id)
         {
             var user = await _context.Users.Where(u => u.Id == id).SingleOrDefaultAsync();
-            return user!;
+            return user;
+        }
+
+        public async Task<UserEntity?> GetAsync(string phoneNumber)
+        {
+            var user = await _context.Users.Where(u => string.Equals(u.Phone, phoneNumber)).SingleOrDefaultAsync();
+            return user;
         }
 
         public async Task<IList<UserEntity>> ListAsync()
@@ -62,7 +68,7 @@
 
             try
             {
-                _context.Entry(await GetAsync(id)).State = EntityState.Deleted;
+                _context.Entry((await GetAsync(id)) !).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return id;

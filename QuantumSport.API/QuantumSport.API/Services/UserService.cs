@@ -15,11 +15,30 @@ namespace QuantumSport.API.Services
 
         public async Task<UserDTO> GetAsync(int id)
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid user id");
+            }
+
             var data = await _userRepository.GetAsync(id);
 
             if (data == null)
             {
-                throw new UserNotFoundException($"User with id = {id} does not exist");
+                throw new NotFoundException($"User with id = {id} does not exist");
+            }
+
+            return _mapper.Map<UserDTO>(data);
+        }
+
+        public async Task<UserDTO> GetAsync(string phoneNumber)
+        {
+            ValidateUserPhone(phoneNumber);
+
+            var data = await _userRepository.GetAsync(phoneNumber);
+
+            if (data == null)
+            {
+                throw new NotFoundException($"User with phone = {phoneNumber} does not exist");
             }
 
             return _mapper.Map<UserDTO>(data);
@@ -28,20 +47,36 @@ namespace QuantumSport.API.Services
         public async Task<IList<UserDTO>> ListAsync()
         {
             var data = await _userRepository.ListAsync();
-            return data.Select(d => _mapper.Map<UserDTO>(d)).ToList();
+            return _mapper.Map<IList<UserDTO>>(data);
         }
 
         public async Task<int> AddAsync(UserDTO user)
         {
             ValidateUser(user);
+
+            var data = await _userRepository.GetAsync(user.Phone);
+            if (data != null)
+            {
+                throw new ArgumentException($"User with phone = {user.Phone} already exists");
+            }
+
             user.Id = default;
+
             return await _userRepository.AddAsync(_mapper.Map<UserEntity>(user));
         }
 
         public async Task<int> UpdateAsync(UserDTO user)
         {
-            await GetAsync(user.Id);
             ValidateUser(user);
+
+            var data = await _userRepository.GetAsync(user.Phone);
+            if (data != null)
+            {
+                throw new ArgumentException($"User with phone = {user.Phone} already exists");
+            }
+
+            await GetAsync(user.Id);
+
             return await _userRepository.UpdateAsync(_mapper.Map<UserEntity>(user));
         }
 
@@ -58,39 +93,59 @@ namespace QuantumSport.API.Services
                 throw new ArgumentNullException(nameof(user), "User is empty");
             }
 
-            Regex wordPattern = new Regex("^[a-zA-Z- ]+$");
-            Regex phonePattern = new Regex("^[+][0-9]{10}$");
+            ValidateUserName(user.Name);
 
-            if (string.IsNullOrWhiteSpace(user.Name))
+            ValidateUserPhone(user.Phone);
+        }
+
+        private static void ValidateUserName(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new ArgumentException(nameof(user.Name), "User name is empty");
+                throw new ArgumentNullException(nameof(userName), "User name is empty");
             }
             else
             {
-                user.Name = user.Name.Trim();
+                userName = userName.Trim();
 
-                if (!wordPattern.IsMatch(user.Name) || user.Name.Length < 3 || user.Name.Length > 255)
+                if (userName.Length < 3)
                 {
-                    throw new ArgumentException(nameof(user.Name), "User name is invalid");
+                    throw new ArgumentException(nameof(userName), "User name must be at least 3 characters long");
+                }
+
+                if (userName.Length > 55)
+                {
+                    throw new ArgumentException(nameof(userName), "User name must be maximum of 55 characters");
+                }
+
+                Regex englishWordPattern = new ("^[a-zA-Z -]+$");
+                Regex ukrainianWordPattern = new ("^[АаБбВвГгҐґДдЕеЄєЖжЗзИиІіЇїЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщьЮюЯя -]+$");
+
+                if (!englishWordPattern.IsMatch(userName))
+                {
+                    if (!ukrainianWordPattern.IsMatch(userName))
+                    {
+                        throw new ArgumentException(nameof(userName), "User name must consist of english or ukrainian letters only");
+                    }
                 }
             }
+        }
 
-            if (string.IsNullOrWhiteSpace(user.Phone))
+        private static void ValidateUserPhone(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
             {
-                throw new ArgumentNullException(nameof(user.Phone), "Phone is empty");
+                throw new ArgumentNullException(nameof(phoneNumber), "Phone is empty");
             }
             else
             {
-                user.Phone = user.Phone.Trim();
+                phoneNumber = phoneNumber.Trim();
 
-                if (!user.Phone.StartsWith('+'))
-                {
-                    user.Phone = user.Phone.Insert(0, "+");
-                }
+                const string ukrainianPhoneNumberPattern = @"^\+380\d{9}$";
 
-                if (!phonePattern.IsMatch(user.Phone))
+                if (!Regex.IsMatch(phoneNumber, ukrainianPhoneNumberPattern))
                 {
-                    throw new ArgumentException(nameof(user.Phone), "Phone is invalid");
+                    throw new ArgumentException(nameof(phoneNumber), "Phone is invalid");
                 }
             }
         }

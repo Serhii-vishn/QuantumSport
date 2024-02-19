@@ -61,10 +61,11 @@ namespace QuantumSport.UnitTests.Services
         {
             // Arrange
             var fakeUserEntityList = new List<UserEntity>() { _fakeUserEntity };
+            var fakeUserDTOList = new List<UserDTO>() { _fakeUserDTO };
             _userRepository.Setup(s => s.ListAsync()).ReturnsAsync(fakeUserEntityList);
 
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _mapper.Setup(s => s.Map<IList<UserDTO>>(
+                It.Is<IList<UserEntity>>(i => i.Equals(fakeUserEntityList)))).Returns(fakeUserDTOList);
 
             // Act
             var result = await _userService.ListAsync();
@@ -102,14 +103,23 @@ namespace QuantumSport.UnitTests.Services
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public async Task GetAsync_PassingInvalidId_ThrowsUserNotFoundException(int id)
+        public async Task GetAsync_PassingInvalidId_ThrowsArgumentException(int id)
+        {
+            // Arrange, Act and Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _userService.GetAsync(id));
+        }
+
+        [Theory]
+        [InlineData(10000)]
+        [InlineData(1111111)]
+        public async Task GetAsync_PassingNonExistentId_ThrowsUserNotFoundException(int id)
         {
             // Arrange
             UserEntity nullUserEntity = null!;
             _userRepository.Setup(s => s.GetAsync(id)).ReturnsAsync(nullUserEntity);
 
             // Act and Assert
-            await Assert.ThrowsAsync<UserNotFoundException>(async () => await _userService.GetAsync(id));
+            await Assert.ThrowsAsync<NotFoundException>(async () => await _userService.GetAsync(id));
         }
 
         [Fact]

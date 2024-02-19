@@ -1,0 +1,332 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixin.scss";
+
+.photoSection {
+    position: relative;
+    height: 100%;
+
+    .photoSectionImg {
+        height: 100%;
+        width: 100%;
+        color: white;
+        z-index: 0;
+        position: relative;
+        padding-top: 80px;
+
+        @include width_576 {
+            padding-top: 70px;
+        }
+    }
+
+    .photoSectionInfo {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        position: absolute;
+        top: 210px;
+        padding-left: 90px;
+
+        .photoSectionInfoTitle {
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            width: 430px;
+            margin-bottom: 25px;
+
+            @include width_1271 {
+                font-size: 30px;
+                width: 330px;
+                margin-bottom: 15px;
+            }
+
+            @include width_992 {
+                width: 285px;
+                font-size: 25px;
+            }
+
+            @include width_768 {
+                font-size: 20px;
+                width: 240px;
+            }
+
+            @include width_576 {
+                width: 200px;
+
+            }
+
+        }
+
+        .photoSectionInfoText {
+            font-size: 25px;
+            color: white;
+            width: 295px;
+            margin-bottom: 50px;
+
+            @include width_1271 {
+                font-size: 20px;
+                width: 225px;
+                margin-bottom: 20px;
+            }
+
+            @include width_992 {
+                width: 210px;
+                font-size: 17px;
+            }
+
+            @include width_880 {
+                font-size: 15px;
+            }
+
+            @include width_672 {
+                font-size: 13px;
+            }
+
+            @include width_576 {
+                display: none;
+            }
+        }
+
+        .photoSectionInfolink {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            padding: 15px 20px;
+            background-color: $orange-color;
+            border: 2px solid $orange-color;
+
+            &:hover {
+                background-color: transparent;
+                color: $orange-color;
+                transition: .5s;
+            }
+
+            @include width_1271 {
+                font-size: 15px;
+                padding: 10px 15px;
+            }
+
+            @include width_768 {
+                font-size: 14px;
+
+            }
+        }
+
+        @include width_992 {
+            padding-left: 50px;
+            top: 170px;
+        }
+
+        @include width_880 {
+            top: 150px;
+        }
+
+        @include width_672 {
+            top: 128px;
+        }
+
+        @include width_576 {
+            top: 120px;
+        }
+
+        @include width_440 {
+            top: 100px;
+            padding-left: 30px;
+        }
+    }
+}
+
+.sectionsWrapper {
+    padding-top: 55px;
+    padding-bottom: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .sectionList {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 20px;
+
+        .sectionListItem {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+
+            .sectionItemImg {
+                width: 600px;
+                height: 580px;
+
+                @include width_1271 {
+                    width: 420px;
+                    height: 405px;
+                }
+
+                @include width_880 {
+                    width: 344px;
+                    height: 330px;
+                }
+
+                @include width_768 {
+                    width: 490px;
+                    height: 472px;
+                }
+
+                @include width_576 {
+                    width: 385px;
+                    height: 370px;
+                }
+
+                @include width_440 {
+                    width: 335px;
+                    height: 322px;
+                }
+            }
+
+            .sectionItemInfoWrapper {
+                width: 600px;
+                height: 580px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-between;
+                background-color: #eeeeee;
+                padding: 110px 85px 65px;
+                text-align: center;
+
+                .sectionItemInfoTextWrapper {
+
+                    .sectionItemInfoTitle {
+                        font-weight: bold;
+                        font-size: 25px;
+                        font-style: italic;
+                        margin-bottom: 20px;
+
+                        @include width_880 {
+                            margin-bottom: 10px;
+                            font-size: 20px;
+                        }
+
+                        @include width_768 {
+                            color: white;
+                            font-size: 25px;
+                            margin-bottom: 20px;
+                        }
+
+                        @include width_440 {
+                            margin-bottom: 10px;
+                            font-size: 20px
+                        }
+                    }
+
+                    .sectionItemInfoSvg {
+                        width: 75px;
+                        height: auto;
+                        margin-bottom: 25px;
+
+                        @include width_1271 {
+                            width: 50px;
+                        }
+
+                        @include width_880 {
+                            margin-bottom: 10px;
+                        }
+
+                        @include width_768 {
+                            font-size: 13px;
+                        }
+                    }
+
+                    .sectionItemInfoText {
+                        font-size: 15px;
+                        color: #72665e;
+
+                        @include width_880 {
+                            font-size: 12px;
+                        }
+
+                        @include width_768 {
+                            color: white;
+                        }
+                    }
+                }
+
+                .sectionItemInfoLink {
+                    background-color: $orange-color;
+                    border: 2px solid $orange-color;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 16px;
+                    padding: 15px 30px;
+
+                    &:hover {
+                        background-color: transparent;
+                        color: $orange-color;
+                        transition: .5s;
+                    }
+                }
+
+                @include width_1271 {
+                    width: 420px;
+                    height: 405px;
+                    padding: 30px 40px;
+                }
+
+                @include width_880 {
+                    width: 344px;
+                    height: 330px;
+                }
+
+                @include width_768 {
+                    position: absolute;
+                    top: 0;
+                    background-color: rgba(0, 0, 0, 0.25);
+                    width: 490px;
+                    height: 472px;
+                    padding: 110px 85px 65px;
+                }
+
+                @include width_576 {
+                    width: 385px;
+                    height: 370px;
+                    padding: 30px 40px;
+                }
+
+                @include width_440 {
+                    width: 335px;
+                    height: 322px;
+                    padding: 30px 20px;
+                }
+            }
+
+            @include width_880 {
+                gap: 10px;
+            }
+
+            @include width_768 {
+                display: block;
+                position: relative;
+            }
+        }
+
+        @include width_880 {
+            gap: 10px;
+        }
+    }
+
+    @include width_1271 {
+        padding: 55px 65px;
+    }
+
+    @include width_880 {
+        padding: 35px 35px;
+    }
+
+    @include width_440 {
+        padding: 25px 10px;
+    }
+}

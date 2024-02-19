@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace QuantumSport.API.Data.EntityConfigurations
+﻿namespace QuantumSport.API.Data.EntityConfigurations
 {
     public class UserEntityTypeConfiguration : IEntityTypeConfiguration<UserEntity>
     {
@@ -16,10 +14,10 @@ namespace QuantumSport.API.Data.EntityConfigurations
 
             builder.Property(u => u.Name)
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(55);
 
             builder.Property(u => u.Phone)
-                .HasMaxLength(11)
+                .HasMaxLength(13)
                 .IsFixedLength()
                 .IsRequired();
 
