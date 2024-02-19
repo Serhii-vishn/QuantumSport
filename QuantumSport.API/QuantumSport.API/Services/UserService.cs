@@ -24,7 +24,7 @@ namespace QuantumSport.API.Services
 
             if (data == null)
             {
-                throw new UserNotFoundException($"User with id = {id} does not exist");
+                throw new NotFoundException($"User with id = {id} does not exist");
             }
 
             return _mapper.Map<UserDTO>(data);
@@ -38,7 +38,7 @@ namespace QuantumSport.API.Services
 
             if (data == null)
             {
-                throw new UserNotFoundException($"User with phone = {phoneNumber} does not exist");
+                throw new NotFoundException($"User with phone = {phoneNumber} does not exist");
             }
 
             return _mapper.Map<UserDTO>(data);

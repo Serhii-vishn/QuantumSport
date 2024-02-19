@@ -91,7 +91,7 @@
             _userRepository.Setup(s => s.GetAsync(id)).ReturnsAsync(nullUserEntity);
 
             // Act and Assert
-            await Assert.ThrowsAsync<UserNotFoundException>(async () => await _userService.GetAsync(id));
+            await Assert.ThrowsAsync<NotFoundException>(async () => await _userService.GetAsync(id));
         }
 
         [Fact]

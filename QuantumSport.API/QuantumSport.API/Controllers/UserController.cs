@@ -39,7 +39,7 @@
                 _logger.LogInformation($"User with id = {result.Id} was received");
                 return Ok(result);
             }
-            catch (UserNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return NotFound(ex.Message);
@@ -66,7 +66,7 @@
                 _logger.LogInformation($"User with id = {result.Id} was received");
                 return Ok(result);
             }
-            catch (UserNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return NotFound(ex.Message);
@@ -115,7 +115,7 @@
                 _logger.LogInformation($"User with id = {result} was updated");
                 return Ok(result);
             }
-            catch (UserNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return NotFound(ex.Message);
@@ -142,7 +142,7 @@
                 _logger.LogInformation($"User with id = {result} was deleted");
                 return Ok(result);
             }
-            catch (UserNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return NotFound(ex.Message);
