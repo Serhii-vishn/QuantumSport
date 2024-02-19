@@ -104,7 +104,7 @@
                                     "Зокрема готував збірну до Чемпіонату світу з боксу 2011 року, " +
                                     "де Україна виборола першість, та до Олімпійських ігор 2012 року, " +
                                     "де збірна посіла друге місце.",
-                    PictureFileName = "anatoly_lomachenko.jpg",
+                    PictureFileName = "anatoly-lomachenko.jpg",
                 },
                 new CoachEntity()
                 {
@@ -134,7 +134,7 @@
                                     "Майстер-тренер Procedos (Швеція). " +
                                     "Співзасновник та фітнес-директор мережі студій HiitWorks (Київ). " +
                                     "Чоловік року Фітнес індустрії України 2019 року (премія «Фітнес-трімуф 2019»).",
-                    PictureFileName = "yaroslav_soynikov.png",
+                    PictureFileName = "yaroslav-soynikov.png",
                 },
             };
         }
