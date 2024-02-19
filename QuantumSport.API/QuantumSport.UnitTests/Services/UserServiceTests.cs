@@ -45,10 +45,11 @@
         {
             // Arrange
             var fakeUserEntityList = new List<UserEntity>() { _fakeUserEntity };
+            var fakeUserDTOList = new List<UserDTO>() { _fakeUserDTO };
             _userRepository.Setup(s => s.ListAsync()).ReturnsAsync(fakeUserEntityList);
 
-            _mapper.Setup(s => s.Map<UserDTO>(
-                It.Is<UserEntity>(i => i.Equals(_fakeUserEntity)))).Returns(_fakeUserDTO);
+            _mapper.Setup(s => s.Map<IList<UserDTO>>(
+                It.Is<IList<UserEntity>>(i => i.Equals(fakeUserEntityList)))).Returns(fakeUserDTOList);
 
             // Act
             var result = await _userService.ListAsync();
