@@ -12,6 +12,7 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<ICoachRepository, CoachRepository>();
 
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<ICoachService, CoachService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
