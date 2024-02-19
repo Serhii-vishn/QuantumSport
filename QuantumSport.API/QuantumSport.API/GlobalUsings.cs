@@ -8,6 +8,7 @@ global using QuantumSport.API.Repositories;
 global using QuantumSport.API.Services.Interfaces;
 global using QuantumSport.API.Services;
 global using QuantumSport.API.Models.DTOs;
+global using QuantumSport.API.Models.Responses;
 global using AutoMapper;
 global using QuantumSport.API.Exceptions;
 global using QuantumSport.API.Configurations;
