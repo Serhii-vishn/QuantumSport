@@ -112,7 +112,7 @@ namespace QuantumSport.UnitTests.Services
         [Theory]
         [InlineData(10000)]
         [InlineData(1111111)]
-        public async Task GetAsync_PassingNonExistentId_ThrowsUserNotFoundException(int id)
+        public async Task GetAsync_PassingNonExistentId_ThrowsNotFoundException(int id)
         {
             // Arrange
             UserEntity nullUserEntity = null!;
@@ -135,8 +135,6 @@ namespace QuantumSport.UnitTests.Services
             var result = await _userService.GetAsync(_fakeUserDTO.Id);
 
             // Assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType<UserDTO>();
             result.Should().Be(_fakeUserDTO);
         }
 
@@ -144,14 +142,14 @@ namespace QuantumSport.UnitTests.Services
         [InlineData(0)]
         [InlineData(-1)]
 
-        public async Task DeleteAsync_PassingInvalidId_ThrowsUserNotFoundException(int id)
+        public async Task DeleteAsync_PassingInvalidId_ThrowsNotFoundException(int id)
         {
             // Arrange
             UserEntity nullUserEntity = null!;
             _userRepository.Setup(s => s.GetAsync(id)).ReturnsAsync(nullUserEntity);
 
             // Act and Assert
-            await Assert.ThrowsAsync<UserNotFoundException>(async () => await _userService.DeleteAsync(id));
+            await Assert.ThrowsAsync<NotFoundException>(async () => await _userService.DeleteAsync(id));
         }
 
         [Fact]
@@ -213,7 +211,7 @@ namespace QuantumSport.UnitTests.Services
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public async Task UpdateAsync_PassingInvalidId_ThrowsUserNotFoundException(int id)
+        public async Task UpdateAsync_PassingInvalidId_ThrowsNotFoundException(int id)
         {
             // Arrange
             UserEntity nullUserEntity = null!;
@@ -221,7 +219,7 @@ namespace QuantumSport.UnitTests.Services
             _userRepository.Setup(s => s.GetAsync(id)).ReturnsAsync(nullUserEntity);
 
             // Act and Assert
-            await Assert.ThrowsAsync<UserNotFoundException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
+            await Assert.ThrowsAsync<NotFoundException>(async () => await _userService.UpdateAsync(_fakeUserDTO));
         }
 
         [Fact]
@@ -283,6 +281,8 @@ namespace QuantumSport.UnitTests.Services
         [Theory]
         [InlineData("87687abc6")]
         [InlineData(" %^@()46")]
+        [InlineData("T@ras")]
+        [InlineData("0lya")]
         public async Task UpdateAsync_UserNameConsistsOfNonAlphabetSymbols_ThrowsArgumentException(string name)
         {
             // Arrange
@@ -428,6 +428,8 @@ namespace QuantumSport.UnitTests.Services
         [Theory]
         [InlineData("87687abc6")]
         [InlineData(" %^@()46")]
+        [InlineData("T@ras")]
+        [InlineData("0lya")]
         public async Task AddAsync_UserNameConsistsOfNonAlphabetSymbols_ThrowsArgumentException(string name)
         {
             // Arrange
@@ -537,10 +539,11 @@ namespace QuantumSport.UnitTests.Services
 
         private string GetMockStringOfSpecifiedLength(int length)
         {
-            StringBuilder mockString = new StringBuilder("A", length);
+            StringBuilder mockString = new StringBuilder();
+
             for (int i = 0; i < length; i++)
             {
-                mockString.Append(new char[] { 'a' });
+                mockString.Append('a');
             }
 
             return mockString.ToString();
