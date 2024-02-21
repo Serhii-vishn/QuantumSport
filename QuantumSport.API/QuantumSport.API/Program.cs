@@ -14,6 +14,7 @@ builder.Services.AddTransient<IIndividualTrainingProgramOrderRepository, Individ
 
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICoachService, CoachService>();
+builder.Services.AddTransient<IIndividualTrainingProgramOrderService, IndividualTrainingProgramOrderService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
