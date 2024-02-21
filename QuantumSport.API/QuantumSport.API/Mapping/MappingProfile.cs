@@ -17,6 +17,8 @@ namespace QuantumSport.API.Mapping
             CreateMap<CoachDTO, CoachNavigationResponse>().ForMember(d => d.Name, opt => opt.MapFrom(c => c.FirstName + " " + c.LastName));
             CreateMap<CoachDTO, CoachShortResponse>().ForMember(d => d.Name, opt => opt.MapFrom(c => c.FirstName + " " + c.LastName));
             CreateMap<CoachDTO, CoachModelResponse>().ForMember(d => d.Name, opt => opt.MapFrom(c => c.FirstName + " " + c.LastName));
+
+            CreateMap<IndividualTrainingProgramOrderRequest, IndividualTrainingProgramOrderRequestDTO>();
         }
     }
 }

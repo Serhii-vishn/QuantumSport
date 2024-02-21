@@ -1,4 +1,4 @@
-﻿namespace QuantumSport.API.Models.Responses
+﻿namespace QuantumSport.API.Models.ViewModels
 {
     public class CoachShortResponse
     {

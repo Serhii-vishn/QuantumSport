@@ -24,6 +24,8 @@
                 Phone = trainingProgramOrderDTO.UserPhone
             };
 
+            await _coachService.GetAsync(trainingProgramOrderDTO.CoachId);
+
             try
             {
                 user = await _userService.GetAsync(user.Phone);
@@ -32,8 +34,6 @@
             {
                 user.Id = await _userService.AddAsync(user);
             }
-
-            await _coachService.GetAsync(trainingProgramOrderDTO.CoachId);
 
             IndividualTrainingProgramOrderEntity trainingProgramOrderEntity = new IndividualTrainingProgramOrderEntity()
             {
