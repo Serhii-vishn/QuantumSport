@@ -10,9 +10,11 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<ICoachRepository, CoachRepository>();
+builder.Services.AddTransient<IIndividualTrainingProgramOrderRepository, IndividualTrainingProgramOrderRepository>();
 
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICoachService, CoachService>();
+builder.Services.AddTransient<IIndividualTrainingProgramOrderService, IndividualTrainingProgramOrderService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
